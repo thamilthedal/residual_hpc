@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 from matplotlib import rcParams as rc
 
-def set_plot(Title, X, Y, size=(8,6.5)):
+def set_plot(Title, X, Y, size):
 
     #Changing Font of Plot
     rc['mathtext.fontset'] = 'cm'
