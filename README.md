@@ -14,6 +14,3 @@ python residue.py <path_to_output_file_in_Cluster>
 - Pandas
 - Numpy
 - Matplotlib
-
-## set_plot
-set_plot() from plot_utils module will be added later. But it's just a module to set plot properties.
