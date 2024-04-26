@@ -27,8 +27,6 @@ def init():
 
 
 def run(residue):
-    # update the data
-    # residue = mh.convert_float(data)
     X, Y = mh.extract_scale(residue)
 
     ax.set_xlim(X[0], X[1])
