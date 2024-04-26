@@ -45,7 +45,7 @@ def run(residue):
 
 
 def start_monitor():
-    ani = animation.FuncAnimation(fig, run, data_gen, interval=300, init_func=init,
+    ani = animation.FuncAnimation(fig, run, data_gen, interval=30000, init_func=init,
                                   save_count=100)
     plt.show()
 
