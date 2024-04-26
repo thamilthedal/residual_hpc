@@ -1,21 +1,60 @@
-from lib.plot_utils import set_plot, plt
-import monitor.data as md
-from monitor.helper import convert_float, extract_scale
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import monitor.helper as mh
+import sys
+from monitor.data import fig, ax, RES_MARKERS
 
-def monitor_residue(file_name, residue, residue_label):
-    residue = convert_float(residue)
-    [X, Y] = extract_scale(residue)
-    file = file_name.split('/')[-1].split('.')[0]
-    md.TITLE[0] = file
-    [fig, window] = set_plot(md.TITLE, X, Y, (15, 8))
+n_eqns, legend = mh.get_eqns(sys.argv[1])
+line_list = {}
+for i in range(n_eqns):
+    line_list["line_" + str(i + 1)], = ax.plot([], [], RES_MARKERS[i], label=legend[i])
+ax.legend(ncols=2)
 
-    for i in residue.columns:
-        window.plot(residue.index, 
-                    residue.iloc[:, i],
-                    '--',
-                    label = residue_label[i])
-    window.legend()
-    fig.show()
-    plt.pause(60)
-    plt.clf()
-    plt.close()
+
+def data_gen():
+    yield mh.get_residue(sys.argv[1])
+
+
+def init():
+    ax.set_ylim(0.1, 1000)
+    ax.set_xlim(0, 1)
+    xdata, ydata = [], []
+    del xdata[:]
+    del ydata[:]
+    for i in range(len(line_list)):
+        line_list["line_" + str(i + 1)].set_data(xdata, ydata)
+    return line_list
+
+
+def run(residue):
+    # update the data
+    # residue = mh.convert_float(data)
+    X, Y = mh.extract_scale(residue)
+
+    ax.set_xlim(X[0], X[1])
+    ax.set_xscale(X[3])
+    ax.set_ylim(Y[0], Y[1])
+    ax.set_yscale(Y[3])
+    ax.figure.canvas.draw()
+
+    for n, i in enumerate(residue.columns[:-1]):
+        line_list[f"line_{n + 1}"].set_data(residue.index, residue[i])
+    ax.hlines(xmin = X[0], xmax = X[1], y = 1e-5, linestyle = 'dashed', linewidth=2, colors = 'red')
+
+    if residue["conv"].all() == True:
+        ax.text(X[0]+0.5*X[2], Y[1]/100,"Converged!", fontsize=25, color = 'red')
+    return line_list
+
+
+def start_monitor():
+    ani = animation.FuncAnimation(fig, run, data_gen, interval=300, init_func=init,
+                                  save_count=100)
+    plt.show()
+
+
+def main():
+    print("Hello World!")
+
+
+if __name__ == '__main__':
+    main()
