@@ -19,3 +19,6 @@ python residue.py <path_to_output_file_in_Cluster>
 - Pandas
 - Numpy
 - Matplotlib
+
+## Screenshot
+![screenshot](https://github.com/thamilthedal/residual_hpc/blob/main/Figure_1.png?raw=true)
