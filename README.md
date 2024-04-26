@@ -2,6 +2,7 @@
 A Python project to monitor residuals of ANSYS Fluent simulations running on a HPC Cluster from a local machine through SSH.
 
 - Plots the residual graph from the out file of a Fluent simulation and updates it over an interval.
+- Show once the results are converged.
 - Cannot yet plot when the number of equations are increased in the middle of simulation and will throw error.
 
 ## Settings to change
