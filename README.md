@@ -21,4 +21,4 @@ python residue.py <path_to_output_file_in_Cluster>
 - Matplotlib
 
 ## Screenshot
-![screenshot](https://github.com/thamilthedal/residual_hpc/blob/main/Figure_1.png?raw=true)
+![screenshot](https://github.com/thamilthedal/residual_hpc/blob/main/screenshot.png?raw=true)
