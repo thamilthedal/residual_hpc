@@ -1,11 +1,14 @@
 import sys
 from lib.plot_utils import set_plot
 from lib.plot_settings import PLOT_STYLE_RES, RES_MARKERS
+from dotenv import load_dotenv
+import os
 
+load_dotenv()  # take environment variables from .env.
 # SSH Credentials
-HOST_NAME = 'xyz.com'
-USER = 'userid'
-PWD = '********'
+HOST_NAME = os.getenv("HOST_NAME")
+USER = os.getenv("USER")
+PWD = os.getenv("PWD")
 
 # Plot Details
 file_name = sys.argv[1].split('/')[-1].split('.')[0]
