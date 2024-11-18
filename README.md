@@ -1,24 +1,15 @@
-# residual_hpc
-A Python project to monitor residuals of ANSYS Fluent simulations running on a HPC Cluster from a local machine through SSH.
+# COMMAND LINE INTERFACE FOR MONITORING RESIDUALS FOR A ANSYS FLUENT SIMULATION IN ROCKS CLUSTER:
 
-- Plots the residual graph from the out file of a Fluent simulation and updates it over an interval.
-- Show once the results are converged.
-- Cannot yet plot when the number of equations that are solved increased or decreased in the middle of simulation and will throw error.
+## Command:
+monitor
 
-## Settings to change
-- Change HOST_NAME, USER, PWD in .env file to your SSH Credentials when you use.
-- Any other plot related settings, size, font, color, etc., can be changed in lib/plot_utils.py and lib/plot_settings.py
+## Getting Started
 
-## To Run
-```
-python residue.py <path_to_output_file_in_Cluster>
-```
+1. Download the repository
+2. Use Python 3.12 or above.
+3. pip install -e .
+4. Change the HOST_NAME, USER and PWD for the Cluster in .env file
 
-## Dependencies
-- Paramiko
-- Pandas
-- Numpy
-- Matplotlib
+## Extrass:
+- Convergence line in red is currently kept at 1e-5 which can also be changed in .env
 
-## Screenshot
-![screenshot](https://github.com/thamilthedal/residual_hpc/blob/main/screenshot.png?raw=true)

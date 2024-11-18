@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: monitor-cli
+Version: 1.0
+Requires-Dist: Click
+Requires-Dist: pandas
+Requires-Dist: numpy
+Requires-Dist: paramiko
+Requires-Dist: matplotlib
+Requires-Dist: python-dotenv
