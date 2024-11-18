@@ -1,6 +1,7 @@
 Metadata-Version: 2.1
 Name: monitor-cli
 Version: 1.0
+License-File: LICENSE
 Requires-Dist: Click
 Requires-Dist: pandas
 Requires-Dist: numpy
