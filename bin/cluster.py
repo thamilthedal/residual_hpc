@@ -20,7 +20,7 @@ def collate_duplicates(df):
     for i in list(set(job_ID)):
         df_raw = df.query(f"JOB_ID == '{i}'")
         if len(df_raw) == 1:
-            node_num.append(i)
+            node_num.append(df_raw['NODE_NUM'].values[0])
             n_cores.append(df_raw['N_CORES'].values[0])
         else:
             N_nodes = ",".join(list(df_raw['NODE_NUM'].values))
@@ -76,42 +76,69 @@ def get_cluster_status(client):
 
     return running_cases
 
-
-def get_file_path():
+def get_jobs():
     client = connect_ssh_client()
 
     # LIST ALL CASES RUNNING UNDER USER
     running_cases = get_cluster_status(client)
     my_cases = running_cases.query(f"USER == '{USER}'")
     final_cases = collate_duplicates(my_cases)
-    # print(my_cases.head)
-    
+
+    client.close()
+    return final_cases
+
+
+def print_jobs():
+    final_cases = get_jobs()
+
     if len(final_cases) > 0:
+
         print(f"\nCURRENTLY RUNNING CASES FOR {USER}:\n\n")
         print("-"*100)
         print("OPTION\tJOB_ID\tJOB_NAME\tDATE\t\tTIME\t\tNODE_NUM\tN_CORES")
         print("-"*100)
-        
-        for index, row in final_cases.iterrows():
-            print(f"{index+1}\t{row['JOB_ID']}\t{row['JOB_NAME']}\t\t{row['DATE']}\t{row['TIME']}\t{row['NODE_NUM']}\t\t{row['N_CORES']}")
 
+        for index, row in final_cases.iterrows():
+            print(f"{index+1}\t{row['JOB_ID']}\t{row['JOB_NAME']}\t{row['DATE']}\t{row['TIME']}\t{row['NODE_NUM']}\t\t{row['N_CORES']}")
         print("-"*100)
-        
+    else:
+        print("CURRENTLY NO CASE IS RUNNING FOR {USER}\n")
+
+
+def get_out_file_path():
+
+    final_cases = get_jobs()
+    client = connect_ssh_client()
+
+    if len(final_cases) > 0:        
         option = input("\nEnter which of the above cases to monitor or Enter 'q' to quit(OPTION):\t")
 
         if option == 'q':
             return False
         else:
             # MAKE SELECTION BASED ON JOB ID
-            job_ID = my_cases["JOB_ID"].iloc[int(option)-1]
+            job_ID = final_cases["JOB_ID"].iloc[int(option)-1]
 
             # FIND FILE NAME OF OUTPUT AND ADDRESS BASED ON JOB ID
             output = ssh_command(client, f"qstat -explain c -j {job_ID}")[1:]
+            client.close()
             folder = output[11].split(':')[1].strip() 
             file_name = output[19].split('/')[1].strip()
             file_path = f"{folder}/{file_name}"
             
             return file_path
-    else:
-        print(f"CURRENTLY NO CASE IS RUNNING FOR {USER}\n")
-        return False
+
+def get_report_file_path():
+    # Connect to SSH 
+
+    # Get the Selected Case from List shown from the user input
+
+    # Get working directory and residue out file of the case 
+
+    # Print the list of all report (*.out) files except the residue file in the working directory and get user input 
+
+    # Return the Address of the Selected report files
+
+    pass
+
+

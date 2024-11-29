@@ -1,9 +1,15 @@
-from bin.cluster import get_file_path
-from bin.monitor import animate_plot
+from bin.cluster import print_jobs, get_out_file_path, get_report_file_path
+from bin.monitor import animate_residue_plot, animate_report_plot
 
-    
+def _jobs():
+    print_jobs()
+
 def _monitor():
-    ouput_file_path = get_file_path()
+    output_file_path = get_out_file_path()
 
-    if ouput_file_path != False:
-        converged = animate_plot(ouput_file_path)
+    if output_file_path != False:
+        converged = animate_residue_plot(output_file_path)
+
+def _file():
+    report_file_path = get_report_file_path()
+

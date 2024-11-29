@@ -39,7 +39,7 @@ def update(frame, output_file_path, ax, line_list):
     return (line_list)
 
 
-def animate_plot(output_file_path):
+def animate_residue_plot(output_file_path):
 
     print_header(f"Monitoring output file: {output_file_path}")
 
@@ -68,4 +68,7 @@ def animate_plot(output_file_path):
     else:
         print_header("Monitor closed before simulation got over!")
         return False
+
+def animate_report_plot(report_file_path):
+    pass
 

@@ -20,3 +20,7 @@ monitor
 ## Extrass:
 - Convergence line in red is currently kept at 1e-5 which can also be changed in .env
 
+
+## TODO:
+- Cut Down the data once it exceeds the limit of 100000 iterations. How to do that??
+

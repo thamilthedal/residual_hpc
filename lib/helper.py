@@ -82,7 +82,7 @@ def get_residue(file_name):
                 count += 1
             else:
                 print(".", end="\t")
-            time.sleep(30)
+            time.sleep(15)
         else:
             break
     residue = fetch_residue(client, file_name, start_id, legend, len(legend))
@@ -122,3 +122,7 @@ def print_header(heading: str)-> None:
     print(character*length)
     print(" "*offset + heading.upper() + " "*offset)
     print(character*length)
+
+def get_report_values(file_name):
+    pass
+
