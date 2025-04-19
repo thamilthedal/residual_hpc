@@ -2,7 +2,7 @@ import paramiko
 import lib.data as md
 import pandas as pd
 import time
-
+import numpy as np
 
 def connect_ssh_client():
     client = paramiko.SSHClient()
@@ -26,41 +26,44 @@ def append_file(file_address, line):
     with open(file_address, 'a') as f:
         f.writelines(" ".join(line))
 
-
-def get_start_id(client, file_name):
+def get_remote_file_contents(client, file_name):
     with client.open_sftp() as sftp_client:
         with sftp_client.open(file_name) as remote_file:
-            for id, line in enumerate(remote_file):
-                if 'time/iter' in line:
-                    legend = line.split()[1:-1]
-                    start_id = id
-                    return [legend, start_id]
+            remote_file_contents = remote_file.readlines()
+
+    return remote_file_contents
+
+def get_start_id(client, file_name):
+    remote_file_contents = get_remote_file_contents(client, file_name)
+    for id, line in enumerate(remote_file_contents):
+        if 'time/iter' in line:
+            legend = line.split()[1:-1]
+            start_id = id
+            return [legend, start_id]
     return [0, 0]
 
 
 def fetch_residue(client, file_name, start_id, legend, n_eqns):
     residue = []
-    write_file("./CLI/residue.txt")
     last_id = 0
-    with client.open_sftp() as sftp_client:
-        with sftp_client.open(file_name) as remote_file:
-            for id, line in enumerate(remote_file):
-                if id <= start_id:
-                    continue
-                else:
-                    A = line.split()
-                    if 'Total Transcript' in line:
-                        last_id = "Over!"
-                        break
-                    if 'converged' in line:
-                        last_id = "Converged!"
-                        break
-                    if len(A) != n_eqns + 3:
-                        continue
-                    if bool(set(md.WORDS).intersection(line)):
-                        continue
-                    append_file("./CLI/residue.txt", line)
-                    residue.append(A[1:n_eqns + 1])
+    
+    remote_file_contents = get_remote_file_contents(client, file_name)
+    for id, line in enumerate(remote_file_contents):
+        if id <= start_id:
+            continue
+        else:
+            A = line.split()
+            if 'Total Transcript' in line:
+                last_id = "Over!"
+                break
+            if 'converged' in line:
+                last_id = "Converged!"
+                break
+            if len(A) != n_eqns + 3:
+                continue
+            if bool(set(md.WORDS).intersection(line)):
+                continue
+            residue.append(A[1:n_eqns + 1])
     residue = pd.DataFrame(residue).apply(pd.to_numeric, errors='coerce')
 
     residue.columns = legend
@@ -88,6 +91,19 @@ def get_residue(file_name):
     residue = fetch_residue(client, file_name, start_id, legend, len(legend))
     return residue
 
+def get_data(file_name):
+    client = connect_ssh_client()
+    remote_file_contents = get_remote_file_contents(client, file_name)
+    data = remote_file_contents[4:-1]
+    raw_data = [i.strip().split("\t") for i in data]
+
+    raw_data = np.array(raw_data)
+    x_data = raw_data[:, 0]
+    y_data = raw_data[:, 1]
+
+    variable = [x_data.astype(np.float64), y_data.astype(np.float64)]
+
+    return variable
 
 def extract_scale(res):
     max_res = res.iloc[:, :-2].max().max()

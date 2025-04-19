@@ -129,16 +129,25 @@ def get_out_file_path():
             return file_path
 
 def get_report_file_path():
-    # Connect to SSH 
+    # Connect to SSH
+    client = connect_ssh_client()
+    final_cases = get_jobs()
+    client = connect_ssh_client()
 
-    # Get the Selected Case from List shown from the user input
+    if len(final_cases) > 0:        
+        option = input("\nEnter which of the above cases to monitor or Enter 'q' to quit(OPTION):\t")
 
-    # Get working directory and residue out file of the case 
+        if option == 'q':
+            return False
+        else:
+            # MAKE SELECTION BASED ON JOB ID
+            job_ID = final_cases["JOB_ID"].iloc[int(option)-1]
 
-    # Print the list of all report (*.out) files except the residue file in the working directory and get user input 
-
-    # Return the Address of the Selected report files
-
-    pass
-
-
+            # FIND FILE NAME OF OUTPUT AND ADDRESS BASED ON JOB ID
+            output = ssh_command(client, f"qstat -explain c -j {job_ID}")[1:]
+            folder = output[11].split(':')[1].strip()
+            command = f"ls {folder}/*.csv"
+            output = ssh_command(client, command)
+            client.close()
+            file_path = output[0].strip()
+            return file_path

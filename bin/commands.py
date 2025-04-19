@@ -12,4 +12,8 @@ def _monitor():
 
 def _file():
     report_file_path = get_report_file_path()
+    print(report_file_path)
+    
+    if report_file_path != False:
+        animate_report_plot(report_file_path)
 

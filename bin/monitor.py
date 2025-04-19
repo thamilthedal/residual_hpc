@@ -13,7 +13,6 @@ from lib.data import CONV_CRITERIA
 def data_gen(output_file_path):
     return mh.get_residue(output_file_path)
 
-
 def update(frame, output_file_path, ax, line_list):
 
     # for each frame, update the data stored on each artist and update the axis scale.
@@ -38,6 +37,21 @@ def update(frame, output_file_path, ax, line_list):
 
     return (line_list)
 
+def update_report(frame, report_file_path, ax, line_list):
+    variable = mh.get_data(report_file_path)
+    X = [min(variable[0]), max(variable[0]), (max(variable[0])-min(variable[0]))/5, "linear"]
+    Y = [min(variable[1]), max(variable[1]), (max(variable[1])-min(variable[1]))/5, "linear"]
+
+    ax.set_xlim(X[0], X[1]+X[2])
+    ax.set_xscale(X[3])
+    ax.set_ylim(Y[0], Y[1]+Y[2])
+    ax.set_yscale(Y[3])
+    fig.canvas.draw()
+    line_list["line_1"].set_data(variable[0], variable[1])
+    line_list["text"].set_x(X[0]+0.5*X[2])
+    line_list["text"].set_y(Y[1])
+    line_list["text"].set_text("$T_{w,max} = $"+f"{max(variable[1])}"+"$K$")
+    return (line_list)
 
 def animate_residue_plot(output_file_path):
 
@@ -69,6 +83,16 @@ def animate_residue_plot(output_file_path):
         print_header("Monitor closed before simulation got over!")
         return False
 
+
 def animate_report_plot(report_file_path):
-    pass
+    print_header(f"Monitoring report file: {report_file_path}")
+    fig.suptitle("", fontsize=16)
+    ax.set_xlabel("$x\\ (m)$")
+    ax.set_ylabel("$T_w\\ (K)$")
+    line_list = {}
+    line_list["line_" + str(1)], = ax.plot([], [], RES_MARKERS[0])
+    line_list["text"] = ax.text(0, 0, " ", fontsize=25, color = 'red')
+
+    anim = animation.FuncAnimation(fig=fig, func=update_report, frames=100000, fargs=(report_file_path, ax, line_list), interval=25000)
+    plt.show(block=True)
 
