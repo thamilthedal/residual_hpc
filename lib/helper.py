@@ -53,7 +53,7 @@ def fetch_residue(client, file_name, start_id, legend, n_eqns):
             continue
         else:
             A = line.split()
-            if 'Total Transcript' in line:
+            if 'Total Transcript' in line and id == len(line)-1:
                 last_id = "Over!"
                 break
             if 'converged' in line:

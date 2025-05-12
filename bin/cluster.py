@@ -5,48 +5,19 @@ from lib.data import USER
 
 
 def collate_duplicates(df):
-    job_ID = df['JOB_ID'].values
-    node_num = []
-    jid = []
-    jname = []
-    user = []
-    load = []
-    status = []
-    date = []
-    time = []
-    n_cores = []
-    
-    df_add = pd.DataFrame()
-    for i in list(set(job_ID)):
-        df_raw = df.query(f"JOB_ID == '{i}'")
-        if len(df_raw) == 1:
-            node_num.append(df_raw['NODE_NUM'].values[0])
-            n_cores.append(df_raw['N_CORES'].values[0])
-        else:
-            N_nodes = ",".join(list(df_raw['NODE_NUM'].values))
-            node_num.append(N_nodes)
-            total_cores = sum([int(i) for i in list(df_raw['N_CORES'].values)])
-            n_cores.append(total_cores)
 
-        jid.append(i)
-        jname.append(df_raw['JOB_NAME'].values[0])
-        user.append(df_raw['USER'].values[0])
-        load.append(df_raw['LOAD'].values[0])
-        status.append(df_raw['STATUS'].values[0])
-        date.append(df_raw['DATE'].values[0])
-        time.append(df_raw['TIME'].values[0])
+    collating_rules = {
+        'NODE_NUM': lambda x: ','.join(x.astype(str)),
+        'N_CORES': 'sum',
+        'JOB_NAME': 'first',
+        'USER': 'first',
+        'LOAD': 'first',
+        'STATUS': 'first',
+        'DATE': 'first',
+        'TIME': 'first'
+    }
 
-    df_add['NODE_NUM'] = node_num
-    df_add['JOB_ID'] = jid
-    df_add['JOB_NAME'] = jname
-    df_add['LOAD'] = load
-    df_add['USER'] = user
-    df_add['STATUS'] = status
-    df_add['DATE'] = date
-    df_add['TIME'] = time
-    df_add['N_CORES'] = n_cores
-
-    return df_add
+    return df.groupby('JOB_ID', as_index=False).agg(collating_rules).sort_values(by=['JOB_ID'])
 
 
 def get_cluster_status(client):
@@ -81,11 +52,10 @@ def get_jobs():
 
     # LIST ALL CASES RUNNING UNDER USER
     running_cases = get_cluster_status(client)
-    my_cases = running_cases.query(f"USER == '{USER}'")
-    final_cases = collate_duplicates(my_cases)
-
+    user_cases = running_cases.query(f"USER == '{USER}'")
+    processed_cases = collate_duplicates(user_cases)
     client.close()
-    return final_cases
+    return processed_cases
 
 
 def print_jobs():
@@ -149,5 +119,9 @@ def get_report_file_path():
             command = f"ls {folder}/*.csv"
             output = ssh_command(client, command)
             client.close()
-            file_path = output[0].strip()
-            return file_path
+            if len(output) > 0:
+                file_path = output[0].strip()
+                return file_path
+            else:
+                print("NO FILES REPORTED!\n")
+                return False
