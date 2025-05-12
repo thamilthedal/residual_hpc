@@ -1,4 +1,4 @@
 venv
-monitor_cli.egg-info
+"monitor_cli.egg-info"
 .env
 *.pyc
