@@ -86,8 +86,8 @@ def animate_residue_plot(output_file_path):
 
 def animate_report_plot(report_file_path):
     print_header(f"Monitoring report file: {report_file_path}")
-    fig.suptitle("", fontsize=16)
-    ax.set_xlabel("$x\\ (m)$")
+    fig.suptitle(f"{report_file_path}", fontsize=16)
+    ax.set_xlabel("$N_{\\Delta t}$")
     ax.set_ylabel("$T_w\\ (K)$")
     line_list = {}
     line_list["line_" + str(1)], = ax.plot([], [], RES_MARKERS[0])

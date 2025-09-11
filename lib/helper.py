@@ -94,8 +94,8 @@ def get_residue(file_name):
 def get_data(file_name):
     client = connect_ssh_client()
     remote_file_contents = get_remote_file_contents(client, file_name)
-    data = remote_file_contents[4:-1]
-    raw_data = [i.strip().split("\t") for i in data]
+    data = remote_file_contents[3:-1]
+    raw_data = [i.strip().split(" ") for i in data]
 
     raw_data = np.array(raw_data)
     x_data = raw_data[:, 0]
