@@ -18,6 +18,12 @@ def file():
     _file()
     _clear_pyc()
 
+@monitor.command()
+def multifile():
+    from bin.commands import _clear_pyc
+    from bin.multifile import multi_file_monitor
+    multi_file_monitor()
+    _clear_pyc()
 
 
 if __name__ == '__main__':

@@ -26,7 +26,7 @@ RES_MARKERS = [
         ]
 
 
-def set_plot(Title, X, Y, size=(8, 6.5), style=DEFAULT_STYLE):
+def set_plot(Title, X, Y, size=(8, 6.5), style=DEFAULT_STYLE, subplots=111):
     # Changing Font of Plot
     rcParams['axes.linewidth'] = style["line_width"]
     rcParams['lines.linewidth'] = style["line_width"]
@@ -35,7 +35,7 @@ def set_plot(Title, X, Y, size=(8, 6.5), style=DEFAULT_STYLE):
     rcParams['legend.fontsize'] = style["internal_fontsize"]
 
     fig = plt.figure(figsize=size, tight_layout=True)
-    a = fig.add_subplot(111)
+    a = fig.add_subplot(subplots)
 
     # Titles
     a.set_title(Title[0], fontsize=style["title_size"], fontweight=style["label_weight"])
