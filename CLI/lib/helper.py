@@ -3,6 +3,8 @@ import CLI.data as md
 import pandas as pd
 import time
 import numpy as np
+import io
+
 
 def connect_ssh_client():
     client = paramiko.SSHClient()
@@ -16,11 +18,9 @@ def ssh_command(client, command):
     out_list = stdout.readlines()
     return out_list
 
-
 def write_file(file_address):
     with open(file_address, 'w') as f:
         f.write("residue\n")
-
 
 def append_file(file_address, line):
     with open(file_address, 'a') as f:
@@ -30,14 +30,6 @@ def get_remote_file_contents(client, file_name):
     command = f"tail -n {md.SAMPLING_DATA} {file_name}"
     stdin, stdout, stderr = client.exec_command(command)
     return stdout.readlines()
-
-
-# def get_remote_file_contents(client, file_name):
-#     with client.open_sftp() as sftp_client:
-#         with sftp_client.open(file_name) as remote_file:
-#             remote_file_contents = remote_file.readlines()
-
-#     return remote_file_contents
 
 def get_start_id(client, file_name):
     remote_file_contents = get_remote_file_contents(client, file_name)
@@ -49,46 +41,41 @@ def get_start_id(client, file_name):
     return [0, 0]
 
 
-def fetch_residue(client, file_name, start_id, legend, n_eqns):
-    iter = []
-    residue = []
-    last_id = 0
+def parse_value(value_str):
+    """Helper function to safely convert a string to a float."""
+    try:
+        return float(value_str)
+    except (ValueError, TypeError):
+        return np.nan
+
+def fetch_residue(client, file_name):
+    """
+    Parses a list of lines to extract all residual data.
+    """
+    lines_list = get_remote_file_contents(client, file_name)
+    all_data_rows = []
+    column_headers = ['iter', 'continuity', 'x-velocity', 'y-velocity', 'energy', 'k', 'omega']
     
-    remote_file_contents = get_remote_file_contents(client, file_name)
-    for id, line in enumerate(remote_file_contents):
-        if id <= start_id:
+    # Directly iterate over the list of lines (much faster)
+    for line in lines_list:
+        parts = line.strip().split()
+
+        if len(parts) < 7:
             continue
-        else:
-            A = line.split()
-            if 'Total' in line and id == len(line)-1:
-                last_id = "Over!"
-                break
-            if 'converged' in line:
-                last_id = "Converged!"
-                break
-            if len(A) != n_eqns + 3:
-                continue
-            if bool(set(md.WORDS).intersection(line)):
-                continue
-            # print(A)
-            residue.append(A[1:n_eqns + 1])
-            # iter.append(A[0])
-    # print(A[0])
-    # print(len(residue))
-    # end = int(A[0])
-    # total = len(residue)
-    # start = end - total
-    # iter = list(range(start, end))
 
-    residue = pd.DataFrame(residue).apply(pd.to_numeric, errors='coerce')
-    # iter = pd.Series(iter, dtype="int64")
-    # print(legend)
-    residue.columns = legend
+        try:
+            iteration = int(parts[0])
+        except ValueError:
+            continue
 
-    residue["conv"] = True if last_id == "Converged!" else False
-    residue["over"] = True if last_id == "Over!" else False
+        residuals = [parse_value(p) for p in parts[1:7]]
+        all_data_rows.append([iteration] + residuals)
 
-    return [iter, residue]
+    df = pd.DataFrame(all_data_rows, columns=column_headers)
+
+    # print(df.dtypes)
+
+    return df
 
 
 def get_residue(file_name):
@@ -105,8 +92,9 @@ def get_residue(file_name):
             time.sleep(15)
         else:
             break
-    iter, residue = fetch_residue(client, file_name, start_id, legend, len(legend))
-    return iter, residue
+    # residue = fetch_residue(client, file_name, start_id, legend, len(legend))
+    residue = fetch_residue(client, file_name)
+    return residue
 
 def get_data(file_name):
     client = connect_ssh_client()
@@ -122,18 +110,18 @@ def get_data(file_name):
     return variable
 
 
-
-def extract_scale(iterations, residuals):
-
+def extract_scale(residuals):
+    
+    iterations = residuals["iter"]
     # print(iterations.max(), iterations.min())
     iter_max = iterations.max()
     iter_min = iter_max - (len(iterations)-1)
     iter_step = abs((iter_max - iter_min))/5
-    # max_iter = np.log10(iter_max)
-    # min_iter = np.log10(iter_min)
-    X = [iter_min, iter_max, iter_step, 'linear']
+    max_iter = np.log10(iter_max)
+    min_iter = np.log10(iter_min)
+    X = [10**min_iter, 10**max_iter, 1, 'log']
 
-    max_res = residuals.iloc[:, 1:-2].max().max()
+    max_res = residuals.iloc[:, 1:].max().max()
     min_res = residuals.replace(0, float('nan')).iloc[:, 1:-2].min().min()
     Y = [min_res / 100, max_res * 100, 1e-2, 'log']
 
@@ -163,7 +151,4 @@ def print_header(heading: str)-> None:
     print(character*length)
     print(" "*offset + heading.upper() + " "*offset)
     print(character*length)
-
-def get_report_values(file_name):
-    pass
 

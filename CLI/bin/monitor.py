@@ -27,15 +27,15 @@ class ResidueMonitorPlot(BaseMonitorPlot):
         self.lines = {}
         self.ax.set_title(rf"$\mathrm{{{self.case_id}}}$")
         self.ax.grid(True, which="both", linestyle='--', alpha=alpha[mode])
-        self.ax.set_xscale("linear")
-        self.ax.set_yscale("log")
+        # self.ax.set_xscale("log")
+        # self.ax.set_yscale("log")
         for i, name in enumerate(self.residual_names):
             line, = self.ax.plot([], [], label=fr"$\mathbf{{{name}}}$", color=palettes[mode][name], linestyle='--', alpha=0.8)
             self.lines[str(i+1)] = line
 
     def update_plot(self):
-        iterations, residuals_dict = get_residue(self.file_path)
-        X, Y = extract_scale(residuals_dict.index, residuals_dict)
+        residuals_dict = get_residue(self.file_path)
+        X, Y = extract_scale(residuals_dict)
         # print(X, Y)
         # print(iterations)
         # print(X, Y)
@@ -47,8 +47,8 @@ class ResidueMonitorPlot(BaseMonitorPlot):
         self.ax.set_yscale(Y[3])
         
         if residuals_dict.index is not None and len(residuals_dict.index) > 0:
-            for n, i in enumerate(residuals_dict.columns[1:-2]):
-                self.lines[str(n+1)].set_data(residuals_dict.index, residuals_dict[i])
+            for n, i in enumerate(residuals_dict.columns[1:]):
+                self.lines[str(n+1)].set_data(residuals_dict["iter"], residuals_dict[i])
 
 class FileMonitorPlot(BaseMonitorPlot):
     """
