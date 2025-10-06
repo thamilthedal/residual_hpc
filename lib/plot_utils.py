@@ -1,6 +1,8 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import rcParams as rc
+from lib.plot_settings import color, contrast, mode
+
 
 def set_plot(Title, X, Y, size, style):
     # Changing Font of Plot
@@ -64,14 +66,20 @@ def multi_plot(Title, X, Y, n_plots, style):
     rc['lines.markersize'] = style["marker_size"]
     rc['legend.fontsize'] = style["internal_fontsize"]
 
-    if n_plots == 4:
+    if n_plots == 1:
+        plot_info = 111
+    if n_plots == 2:
+        plot_info = 121
+    if n_plots in [3, 4]:
         plot_info = 221
-    if n_plots == 6:
+    if n_plots in [5, 6]:
         plot_info = 231
-    if n_plots == 9:
+    if n_plots in [7, 8, 9]:
         plot_info = 331
     
     fig = plt.figure(figsize=(17,9), tight_layout=True)
+    fig.set_facecolor(color[mode])
+
     plots = []
     for i in range(n_plots):
         plots.append(fig.add_subplot(plot_info+i))
@@ -79,15 +87,17 @@ def multi_plot(Title, X, Y, n_plots, style):
 
 
     for a in plots:
+        a.set_facecolor(color[mode])
+        
         a.set_title(Title[0], 
                     fontsize=style["title_size"], 
-                    fontweight=style["label_weight"])
+                    fontweight=style["label_weight"], color=contrast[mode])
         a.set_xlabel(Title[1], 
                      fontsize=style["label_size"], 
-                     fontweight=style["label_weight"])
+                     fontweight=style["label_weight"],color=contrast[mode])
         a.set_ylabel(Title[2], 
                      fontsize=style["label_size"], 
-                     fontweight=style["label_weight"])
+                     fontweight=style["label_weight"], color=contrast[mode])
 
         # Axis Limits Grid and Ticks
 
@@ -98,7 +108,7 @@ def multi_plot(Title, X, Y, n_plots, style):
         
         # Set Axis Limits
         if X[3] != "log" and Y[3] != "log":
-            print("linear plot")
+            # print("linear plot")
             a.axis([X[0]-x_offset, X[1]+x_offset, Y[0]-y_offset, Y[1]+y_offset])
 
         # Set Plot Border
@@ -106,6 +116,10 @@ def multi_plot(Title, X, Y, n_plots, style):
         a.spines['top'].set_visible(style["border"][1])
         a.spines['left'].set_visible(style["border"][2])
         a.spines['bottom'].set_visible(style["border"][3])
+        a.spines['right'].set_color(contrast[mode])
+        a.spines['top'].set_color(contrast[mode])
+        a.spines['left'].set_color(contrast[mode])
+        a.spines['bottom'].set_color(contrast[mode])
 
         # Grid ON/OFF
         # a.grid(style['grid'],color='k',linestyle='dashed',alpha=0.5)
@@ -114,7 +128,7 @@ def multi_plot(Title, X, Y, n_plots, style):
         a.tick_params(direction='out', 
                       length=5, 
                       width=style["tick_width"], 
-                      colors='k', 
+                      colors=contrast[mode], 
                       labelsize = style["internal_fontsize"])
         for label in a.get_xticklabels():
             label.set_fontweight('bold')

@@ -26,12 +26,20 @@ def append_file(file_address, line):
     with open(file_address, 'a') as f:
         f.writelines(" ".join(line))
 
-def get_remote_file_contents(client, file_name):
-    with client.open_sftp() as sftp_client:
-        with sftp_client.open(file_name) as remote_file:
-            remote_file_contents = remote_file.readlines()
+def get_remote_file_contents(client, file_name, start_line=1):
+    # tail is 1-indexed, so we add 1 to our 0-indexed start_id
+    command = f"tail -n 50000 {file_name}"
+    # command = f"tail -n +{start_line + 1} {file_name}" 
+    stdin, stdout, stderr = client.exec_command(command)
+    return stdout.readlines()
 
-    return remote_file_contents
+
+# def get_remote_file_contents(client, file_name):
+#     with client.open_sftp() as sftp_client:
+#         with sftp_client.open(file_name) as remote_file:
+#             remote_file_contents = remote_file.readlines()
+
+#     return remote_file_contents
 
 def get_start_id(client, file_name):
     remote_file_contents = get_remote_file_contents(client, file_name)
@@ -44,10 +52,11 @@ def get_start_id(client, file_name):
 
 
 def fetch_residue(client, file_name, start_id, legend, n_eqns):
+    iter = []
     residue = []
     last_id = 0
     
-    remote_file_contents = get_remote_file_contents(client, file_name)
+    remote_file_contents = get_remote_file_contents(client, file_name, start_id+2)
     for id, line in enumerate(remote_file_contents):
         if id <= start_id:
             continue
@@ -63,15 +72,18 @@ def fetch_residue(client, file_name, start_id, legend, n_eqns):
                 continue
             if bool(set(md.WORDS).intersection(line)):
                 continue
+            # print(A)
             residue.append(A[1:n_eqns + 1])
+            iter.append(A[0])
     residue = pd.DataFrame(residue).apply(pd.to_numeric, errors='coerce')
-
+    iter = pd.Series(iter, dtype="int64")
+    # print(legend)
     residue.columns = legend
 
     residue["conv"] = True if last_id == "Converged!" else False
     residue["over"] = True if last_id == "Over!" else False
 
-    return residue
+    return [iter, residue]
 
 
 def get_residue(file_name):
@@ -88,18 +100,14 @@ def get_residue(file_name):
             time.sleep(15)
         else:
             break
-    residue = fetch_residue(client, file_name, start_id, legend, len(legend))
-    return residue
+    iter, residue = fetch_residue(client, file_name, start_id, legend, len(legend))
+    return iter, residue
 
 def get_data(file_name):
     client = connect_ssh_client()
     remote_file_contents = get_remote_file_contents(client, file_name)
     data = remote_file_contents[3:-1]
     raw_data = [i.strip().split(" ") for i in data]
-<<<<<<< HEAD
-=======
-
->>>>>>> c6e8c448a0ce357543bef8feced64bfd083ef68b
     raw_data = np.array(raw_data)
     x_data = raw_data[:, 0]
     y_data = raw_data[:, 1]
@@ -110,11 +118,17 @@ def get_data(file_name):
 
 
 
-def extract_scale(res):
-    max_res = res.iloc[:, :-2].max().max()
-    min_res = res.replace(0, float('nan')).iloc[:, :-2].min().min()
+def extract_scale(iterations, residuals):
 
-    X = [0, max(res.index), int(max(res.index) / 5), 'linear']
+    # print(iterations.max(), iterations.min())
+    iter_max = iterations.max()
+    iter_min = iter_max - len(iterations)
+    max_iter = np.log10(iter_max)
+    min_iter = np.log10(iter_min)
+    X = [min_iter, max_iter, -2, 'log']
+
+    max_res = residuals.iloc[:, 1:-2].max().max()
+    min_res = residuals.replace(0, float('nan')).iloc[:, 1:-2].min().min()
     Y = [min_res / 100, max_res * 100, 1e-2, 'log']
 
     return [X, Y]

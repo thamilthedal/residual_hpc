@@ -74,6 +74,16 @@ def print_jobs():
     else:
         print(f"CURRENTLY NO CASE IS RUNNING FOR {USER}\n")
 
+def fetch_out_file_path(job_ID):
+    client = connect_ssh_client()
+    # FIND FILE NAME OF OUTPUT AND ADDRESS BASED ON JOB ID
+    output = ssh_command(client, f"qstat -explain c -j {job_ID}")[1:]
+    client.close()
+    folder = output[11].split(':')[1].strip() 
+    file_name = output[19].split('/')[1].strip()
+    file_path = f"{folder}/{file_name}"            
+    return file_path
+
 
 def get_out_file_path():
 
@@ -112,7 +122,7 @@ def fetch_report_file_path(job_ID):
         return file_path
     else:
         print("NO FILES REPORTED!\n")
-        return False
+        return None
 
 
 def get_report_file_path():

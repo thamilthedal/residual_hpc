@@ -17,6 +17,6 @@ Title = ["", "Number of Iterations", "Normalized Residuals"]
 X = [0, 1, 0.1, "linear"]
 Y = [0.1, 1000, 10, "log"]
 
-fig, ax = set_plot(Title, X, Y, (8, 6))
+# fig, ax = set_plot(Title, X, Y, (8, 6))
 
 WORDS = ['flow', '#', 'warning', 'details', 'Time', 'survey.', 'anonymous', 'use', 'Solution', 'UDS', 'continuity', 'Clock']
