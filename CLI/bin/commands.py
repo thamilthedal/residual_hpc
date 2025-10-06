@@ -19,9 +19,9 @@ def _jobs():
 
 def _clear_pyc():
     folder_paths = [
-                    "./CLI/__pycache__",
                     "./CLI/bin/__pycache__",
-                    "./CLI/lib/__pycache__"
+                    "./CLI/lib/__pycache__",
+                    "./CLI/__pycache__"
             ]
     for folder in folder_paths:
         shutil.rmtree(folder)

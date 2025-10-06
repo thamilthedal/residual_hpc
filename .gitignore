@@ -3,3 +3,4 @@
 *.pyc
 .intern
 .idea
+monitor_cli.egg-info

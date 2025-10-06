@@ -13,7 +13,7 @@ class BaseMonitorPlot:
         self.ax = ax
         self.case_id = case_id
         self.file_path = file_path
-        self.folder = self.file_path.split("/")[2]
+        self.folder = self.file_path.split("/")[-2]
 
 
 class ResidueMonitorPlot(BaseMonitorPlot):
