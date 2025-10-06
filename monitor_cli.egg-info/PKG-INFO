@@ -1,4 +1,4 @@
-Metadata-Version: 2.2
+Metadata-Version: 2.4
 Name: monitor-cli
 Version: 1.0
 License-File: LICENSE
@@ -8,4 +8,5 @@ Requires-Dist: numpy
 Requires-Dist: paramiko
 Requires-Dist: matplotlib
 Requires-Dist: python-dotenv
+Dynamic: license-file
 Dynamic: requires-dist

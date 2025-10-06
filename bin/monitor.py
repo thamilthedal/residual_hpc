@@ -39,8 +39,10 @@ def update(frame, output_file_path, ax, line_list):
 
 def update_report(frame, report_file_path, ax, line_list):
     variable = mh.get_data(report_file_path)
-    X = [min(variable[0]), max(variable[0]), (max(variable[0])-min(variable[0]))/5, "linear"]
-    Y = [min(variable[1]), max(variable[1]), (max(variable[1])-min(variable[1]))/5, "linear"]
+    X = [min(variable[0]), max(variable[0]), 
+         (max(variable[0])-min(variable[0]))/5, "linear"]
+    Y = [min(variable[1]), max(variable[1]), 
+         (max(variable[1])-min(variable[1]))/5, "linear"]
 
     ax.set_xlim(X[0], X[1]+X[2])
     ax.set_xscale(X[3])
@@ -50,7 +52,7 @@ def update_report(frame, report_file_path, ax, line_list):
     line_list["line_1"].set_data(variable[0], variable[1])
     line_list["text"].set_x(X[0]+0.5*X[2])
     line_list["text"].set_y(Y[1])
-    line_list["text"].set_text("$T_{w,max} = $"+f"{max(variable[1])}"+"$K$")
+    line_list["text"].set_text("$T_{w,max} = $"+f"{max(variable[1]):.4f}"+"$K$")
     return (line_list)
 
 def animate_residue_plot(output_file_path):
@@ -62,7 +64,8 @@ def animate_residue_plot(output_file_path):
     n_eqns, legend = mh.get_eqns(output_file_path)
     line_list = {}
     for i in range(n_eqns):
-        line_list["line_" + str(i + 1)], = ax.plot([], [], RES_MARKERS[i], label=legend[i])
+        line_list["line_" + str(i + 1)], = ax.plot([], [], 
+                                                   RES_MARKERS[i], label=legend[i])
     ax.legend(ncols=2)
 
     write_code(1)
@@ -70,7 +73,10 @@ def animate_residue_plot(output_file_path):
     # Monitor Plot Frame will refresh at an interval of 15 seconds
     # Number of frames will be equal to number of iterations
 
-    ani = animation.FuncAnimation(fig=fig, func=update, frames=100000, fargs = (output_file_path, ax, line_list), interval=15000)
+    ani = animation.FuncAnimation(fig=fig, func=update, 
+                                  frames=100000, 
+                                  fargs = (output_file_path, ax, line_list), 
+                                  interval=15000)
     plt.show(block=True)
     code = get_code()
     if code == 13:
@@ -86,8 +92,8 @@ def animate_residue_plot(output_file_path):
 
 def animate_report_plot(report_file_path):
     print_header(f"Monitoring report file: {report_file_path}")
-    fig.suptitle("", fontsize=16)
-    ax.set_xlabel("$x\\ (m)$")
+    fig.suptitle(f"{report_file_path}", fontsize=16)
+    ax.set_xlabel("$N_{\\Delta t}$")
     ax.set_ylabel("$T_w\\ (K)$")
     line_list = {}
     line_list["line_" + str(1)], = ax.plot([], [], RES_MARKERS[0])

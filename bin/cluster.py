@@ -146,6 +146,7 @@ def get_report_file_path():
             # FIND FILE NAME OF OUTPUT AND ADDRESS BASED ON JOB ID
             output = ssh_command(client, f"qstat -explain c -j {job_ID}")[1:]
             folder = output[11].split(':')[1].strip()
+
             command = f"ls {folder}/*.csv"
             output = ssh_command(client, command)
             client.close()

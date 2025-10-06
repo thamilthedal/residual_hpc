@@ -94,9 +94,8 @@ def get_residue(file_name):
 def get_data(file_name):
     client = connect_ssh_client()
     remote_file_contents = get_remote_file_contents(client, file_name)
-    data = remote_file_contents[4:-1]
-    raw_data = [i.strip().split("\t") for i in data]
-
+    data = remote_file_contents[3:-1]
+    raw_data = [i.strip().split(" ") for i in data]
     raw_data = np.array(raw_data)
     x_data = raw_data[:, 0]
     y_data = raw_data[:, 1]
@@ -104,6 +103,8 @@ def get_data(file_name):
     variable = [x_data.astype(np.float64), y_data.astype(np.float64)]
 
     return variable
+
+
 
 def extract_scale(res):
     max_res = res.iloc[:, :-2].max().max()
