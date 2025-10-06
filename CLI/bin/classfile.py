@@ -4,20 +4,28 @@ from CLI.lib.plot_settings import alpha, palettes, mode
 from CLI.lib.helper import get_data, get_residue, extract_scale
 
 
-class ResidueMonitorPlot:
+class BaseMonitorPlot:
+    """
+    Base Class for Monitor Plots
+    """
+
+    def __init__(self, ax, case_id, file_path):
+        self.ax = ax
+        self.case_id = case_id
+        self.file_path = file_path
+        self.folder = self.file_path.split("/")[2]
+
+
+class ResidueMonitorPlot(BaseMonitorPlot):
     """
     Manages a single subplot for live monitoring of multiple residual
     equations from an ANSYS Fluent case.
     """
     def __init__(self, ax, case_id, residual_names, file_path):
-        self.ax = ax
-        self.case_id = case_id
+        super().__init__(ax, case_id, file_path)
         self.residual_names = residual_names
-        self.file_path = file_path
         self.lines = {}
         self.ax.set_title(rf"$\mathrm{{{self.case_id}}}$")
-        # self.ax.set_xlabel(r"$\mathbf{N_{iterations}}$")
-        # self.ax.set_ylabel(r"$\mathbf{Residuals}$")
         self.ax.grid(True, which="both", linestyle='--', alpha=alpha[mode])
         self.ax.set_xscale("log")
         self.ax.set_yscale("log")
@@ -29,10 +37,9 @@ class ResidueMonitorPlot:
         iterations, residuals_dict = get_residue(self.file_path)
         X, Y = extract_scale(iterations, residuals_dict)
         
-        folder = self.file_path.split("/")[-2]
         # print(iterations)
         # print(X, Y)
-        title = rf"$\mathrm{{{self.case_id}\ [{folder}]}}$"
+        title = rf"$\mathrm{{{self.case_id}\ [{self.folder}]}}$"
         self.ax.set_title(title)
         self.ax.set_xlim(10**X[0], 10**X[1])
         self.ax.set_xscale(X[3])
@@ -43,14 +50,12 @@ class ResidueMonitorPlot:
             for n, i in enumerate(residuals_dict.columns[1:-2]):
                 self.lines[str(n+1)].set_data(iterations, residuals_dict[i])
 
-class FileMonitorPlot:
+class FileMonitorPlot(BaseMonitorPlot):
     """
         Manages a single subplot for live monitoring of report files for ANSYS Fluent case
     """
     def __init__(self, ax, case_id, file_path, label):
-        self.ax = ax
-        self.case_id = case_id
-        self.file_path = file_path
+        super().__init__(ax, case_id, file_path)
         self.label = label
         self.lines = {}
         self.ax.set_title(rf"$\mathrm{{{self.case_id}}}$")
@@ -72,9 +77,7 @@ class FileMonitorPlot:
             X = [min(timestep), max(timestep), (max(timestep) - min(timestep)) / 5, "linear"]
             Y = [min(values), max(values), (max(values) - min(values)) / 5, "linear"]
 
-            folder = self.file_path.split("/")[-2]
-
-            title = rf"$\mathrm{{{self.case_id}}}$" + " " + self.label + rf"$\mathrm{{\ at\ \Delta t\ of\ {timestep[-1]} = {values[-1]:.3f}\ [{folder}]}}$"
+            title = rf"$\mathrm{{{self.case_id}}}$" + " " + self.label + rf"$\mathrm{{\ at\ \Delta t\ of\ {timestep[-1]} = {values[-1]:.3f}\ [{self.folder}]}}$"
             self.ax.set_title(title)
             self.ax.set_xlim(X[0], X[1] + X[2])
             self.ax.set_xscale(X[3])
