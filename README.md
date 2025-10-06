@@ -1,7 +1,13 @@
 # COMMAND LINE INTERFACE FOR MONITORING RESIDUALS FOR A ANSYS FLUENT SIMULATION IN ROCKS CLUSTER:
 
+It can simultaneously monitor upto 9 cases running in HPC
+
 ## Command:
 monitor
+
+### Sub-commands
+- residue
+- file
 
 ## Getting Started
 
@@ -23,3 +29,4 @@ monitor file
 
 ## Extrass:
 - Convergence line in red is currently kept at 1e-5 which can also be changed in .env
+
