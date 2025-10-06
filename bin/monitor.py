@@ -100,5 +100,7 @@ def animate_report_plot(report_file_path):
     line_list["text"] = ax.text(0, 0, " ", fontsize=25, color = 'red')
 
     anim = animation.FuncAnimation(fig=fig, func=update_report, frames=100000, fargs=(report_file_path, ax, line_list), interval=25000)
+
+    plt.get_current_fig_manager().window.state('zoomed')
     plt.show(block=True)
 

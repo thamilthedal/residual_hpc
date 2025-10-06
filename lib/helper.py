@@ -53,7 +53,7 @@ def fetch_residue(client, file_name, start_id, legend, n_eqns):
             continue
         else:
             A = line.split()
-            if 'Total Transcript' in line:
+            if 'Total Transcript' in line and id == len(line)-1:
                 last_id = "Over!"
                 break
             if 'converged' in line:
@@ -96,6 +96,10 @@ def get_data(file_name):
     remote_file_contents = get_remote_file_contents(client, file_name)
     data = remote_file_contents[3:-1]
     raw_data = [i.strip().split(" ") for i in data]
+<<<<<<< HEAD
+=======
+
+>>>>>>> c6e8c448a0ce357543bef8feced64bfd083ef68b
     raw_data = np.array(raw_data)
     x_data = raw_data[:, 0]
     y_data = raw_data[:, 1]
