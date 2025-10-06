@@ -27,9 +27,7 @@ def append_file(file_address, line):
         f.writelines(" ".join(line))
 
 def get_remote_file_contents(client, file_name):
-    # tail is 1-indexed, so we add 1 to our 0-indexed start_id
     command = f"tail -n {md.SAMPLING_DATA} {file_name}"
-    # command = f"tail -n +{start_line + 1} {file_name}" 
     stdin, stdout, stderr = client.exec_command(command)
     return stdout.readlines()
 
@@ -62,7 +60,7 @@ def fetch_residue(client, file_name, start_id, legend, n_eqns):
             continue
         else:
             A = line.split()
-            if 'Total Transcript' in line and id == len(line)-1:
+            if 'Total' in line and id == len(line)-1:
                 last_id = "Over!"
                 break
             if 'converged' in line:
@@ -74,9 +72,16 @@ def fetch_residue(client, file_name, start_id, legend, n_eqns):
                 continue
             # print(A)
             residue.append(A[1:n_eqns + 1])
-            iter.append(A[0])
+            # iter.append(A[0])
+    # print(A[0])
+    # print(len(residue))
+    # end = int(A[0])
+    # total = len(residue)
+    # start = end - total
+    # iter = list(range(start, end))
+
     residue = pd.DataFrame(residue).apply(pd.to_numeric, errors='coerce')
-    iter = pd.Series(iter, dtype="int64")
+    # iter = pd.Series(iter, dtype="int64")
     # print(legend)
     residue.columns = legend
 
@@ -122,10 +127,11 @@ def extract_scale(iterations, residuals):
 
     # print(iterations.max(), iterations.min())
     iter_max = iterations.max()
-    iter_min = iter_max - len(iterations)
-    max_iter = np.log10(iter_max)
-    min_iter = np.log10(iter_min)
-    X = [min_iter, max_iter, -2, 'log']
+    iter_min = iter_max - (len(iterations)-1)
+    iter_step = abs((iter_max - iter_min))/5
+    # max_iter = np.log10(iter_max)
+    # min_iter = np.log10(iter_min)
+    X = [iter_min, iter_max, iter_step, 'linear']
 
     max_res = residuals.iloc[:, 1:-2].max().max()
     min_res = residuals.replace(0, float('nan')).iloc[:, 1:-2].min().min()

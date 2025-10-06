@@ -7,8 +7,8 @@ from CLI.bin.animate import animate_plot
 
 residual_names = ["continuity", "x-velocity", "y-velocity", "energy", "k", "omega"]
 Title = ["", "", ""]
-X = [1, 6, 2, "log"]
-Y = [-3, 3, 1, "log"]
+X = [0, 100, 10, "linear"]
+Y = [-2, 2, 1, "log"]
 
 
 def multi_residue_monitor():

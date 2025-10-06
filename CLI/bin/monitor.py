@@ -27,28 +27,28 @@ class ResidueMonitorPlot(BaseMonitorPlot):
         self.lines = {}
         self.ax.set_title(rf"$\mathrm{{{self.case_id}}}$")
         self.ax.grid(True, which="both", linestyle='--', alpha=alpha[mode])
-        self.ax.set_xscale("log")
+        self.ax.set_xscale("linear")
         self.ax.set_yscale("log")
         for i, name in enumerate(self.residual_names):
-            line, = self.ax.plot([], [], label=name, color=palettes[mode][name], linestyle='--', alpha=0.8)
+            line, = self.ax.plot([], [], label=fr"$\mathbf{{{name}}}$", color=palettes[mode][name], linestyle='--', alpha=0.8)
             self.lines[str(i+1)] = line
 
     def update_plot(self):
         iterations, residuals_dict = get_residue(self.file_path)
-        X, Y = extract_scale(iterations, residuals_dict)
-        
+        X, Y = extract_scale(residuals_dict.index, residuals_dict)
+        # print(X, Y)
         # print(iterations)
         # print(X, Y)
         title = rf"$\mathrm{{{self.case_id}\ [{self.folder}]}}$"
         self.ax.set_title(title)
-        self.ax.set_xlim(10**X[0], 10**X[1])
+        self.ax.set_xlim(X[0], X[1])
         self.ax.set_xscale(X[3])
         self.ax.set_ylim(Y[0], Y[1] + Y[2])
         self.ax.set_yscale(Y[3])
         
         if residuals_dict.index is not None and len(residuals_dict.index) > 0:
             for n, i in enumerate(residuals_dict.columns[1:-2]):
-                self.lines[str(n+1)].set_data(iterations, residuals_dict[i])
+                self.lines[str(n+1)].set_data(residuals_dict.index, residuals_dict[i])
 
 class FileMonitorPlot(BaseMonitorPlot):
     """
