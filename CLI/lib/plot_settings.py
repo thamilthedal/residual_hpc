@@ -1,14 +1,16 @@
 import datetime
 
-
-PLOT_STYLE_RES: dict[str, list[bool] | int | str | float] = {
+RES_STYLE: dict[str, list[bool] | int | str | float] = {
     "font": 'Times New Roman',
-    "title_size": 20,
-    "label_size": 16,
-    "internal_fontsize":16,
+    "title_size": 18,
+    "label_size": 18,
+    "internal_fontsize": 14,
     "label_weight": 'bold',
-    "line_width": 0.75,
-    "border": [False, False, True, True],
+    "line_width": 1.8,
+    "tick_width": 1.8,
+    "border": [True, True, True, True],
+    "grid": "off",
+    "marker_size": 4
 }
 RES_MARKERS = [
         'k--',
@@ -43,16 +45,16 @@ else:
 palettes = {
     'light': {
         'continuity': 'royalblue',
-        'x': 'darkorange',
-        'y': 'forestgreen',
+        'x-velocity': 'darkorange',
+        'y-velocity': 'forestgreen',
         'k': 'crimson',
         'omega': 'darkviolet',
         'energy': 'saddlebrown'  # Replaced teal
     },
     'dark': {
         'continuity': 'skyblue',
-        'x': 'sandybrown',
-        'y': 'mediumaquamarine',
+        'x-velocity': 'sandybrown',
+        'y-velocity': 'mediumaquamarine',
         'k': 'lightcoral',
         'omega': 'orchid',
         'energy': 'peru'          # Replaced turquoise

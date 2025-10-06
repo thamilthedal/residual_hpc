@@ -1,5 +1,5 @@
 import paramiko
-import CLI.lib.data as md
+import CLI.data as md
 import pandas as pd
 import time
 import numpy as np
@@ -28,7 +28,7 @@ def append_file(file_address, line):
 
 def get_remote_file_contents(client, file_name):
     # tail is 1-indexed, so we add 1 to our 0-indexed start_id
-    command = f"tail -n 50000 {file_name}"
+    command = f"tail -n {md.SAMPLING_DATA} {file_name}"
     # command = f"tail -n +{start_line + 1} {file_name}" 
     stdin, stdout, stderr = client.exec_command(command)
     return stdout.readlines()

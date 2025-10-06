@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import rcParams as rc
-from CLI.lib.plot_settings import color, contrast, mode
+from CLI.lib.plot_settings import color, contrast, mode, RES_STYLE
 
 
 def set_plot(Title, X, Y, size, style):
@@ -55,7 +55,10 @@ def set_plot(Title, X, Y, size, style):
     return [fig, a]
 
 
-def multi_plot(Title, X, Y, n_plots, style):
+def multi_plot(X, Y, n_plots):
+
+    Title = ["", "", ""]
+    style = RES_STYLE
 
     rc['mathtext.fontset'] = 'cm'
     rc['font.family'] = 'sans-serif'
