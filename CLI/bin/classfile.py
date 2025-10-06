@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from CLI.lib.plot_settings import alpha, palettes, mode
 from CLI.lib.helper import get_data, get_residue, extract_scale
-from functools import cache
 
 
 class ResidueMonitorPlot:
@@ -26,7 +25,6 @@ class ResidueMonitorPlot:
             line, = self.ax.plot([], [], label=name, color=palettes[mode][name], linestyle='--', alpha=0.8)
             self.lines[str(i+1)] = line
 
-    @cache
     def update_plot(self):
         iterations, residuals_dict = get_residue(self.file_path)
         X, Y = extract_scale(iterations, residuals_dict)
