@@ -1,9 +1,9 @@
-from bin.cluster import get_jobs, fetch_out_file_path
-from bin.classfile import ResidueMonitorPlot
-from lib.plot_utils import multi_plot
-from matplotlib import pyplot as plt
+from CLI.bin.cluster import get_jobs, fetch_out_file_path
+from CLI.bin.classfile import ResidueMonitorPlot
+from CLI.lib.plot_utils import multi_plot, plt
+from CLI.lib.plot_settings import color, contrast, mode
+
 from matplotlib.animation import FuncAnimation
-from lib.plot_settings import color, contrast, mode
 
 RES_STYLE: dict[str, list[bool] | int | str | float] = {
     "font": 'Times New Roman',

@@ -1,5 +1,5 @@
 import paramiko
-import lib.data as md
+import CLI.lib.data as md
 import pandas as pd
 import time
 import numpy as np
@@ -26,7 +26,7 @@ def append_file(file_address, line):
     with open(file_address, 'a') as f:
         f.writelines(" ".join(line))
 
-def get_remote_file_contents(client, file_name, start_line=1):
+def get_remote_file_contents(client, file_name):
     # tail is 1-indexed, so we add 1 to our 0-indexed start_id
     command = f"tail -n 50000 {file_name}"
     # command = f"tail -n +{start_line + 1} {file_name}" 
@@ -56,7 +56,7 @@ def fetch_residue(client, file_name, start_id, legend, n_eqns):
     residue = []
     last_id = 0
     
-    remote_file_contents = get_remote_file_contents(client, file_name, start_id+2)
+    remote_file_contents = get_remote_file_contents(client, file_name)
     for id, line in enumerate(remote_file_contents):
         if id <= start_id:
             continue

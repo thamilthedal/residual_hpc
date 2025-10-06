@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 .venv
-=======
-venv
-monitor_cli.egg-info/
->>>>>>> c6e8c448a0ce357543bef8feced64bfd083ef68b
 .env
 *.pyc
+.intern

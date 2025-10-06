@@ -1,0 +1,6 @@
+Click
+pandas
+numpy
+paramiko
+matplotlib
+python-dotenv

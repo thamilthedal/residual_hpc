@@ -1,7 +1,7 @@
 import pandas as pd 
 
-from lib.helper import connect_ssh_client, ssh_command
-from lib.data import USER
+from CLI.lib.helper import connect_ssh_client, ssh_command
+from CLI.lib.data import USER
 
 
 def collate_duplicates(df):

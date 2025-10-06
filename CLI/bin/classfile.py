@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from lib.plot_settings import alpha, palettes, mode
-from lib.helper import get_data, get_residue, extract_scale
+from CLI.lib.plot_settings import alpha, palettes, mode
+from CLI.lib.helper import get_data, get_residue, extract_scale
 from functools import cache
 
 
