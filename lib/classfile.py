@@ -58,8 +58,8 @@ class FileMonitorPlot:
         self.file_path = file_path
         self.label = label
         self.lines = {}
-        self.ax.set_title(self.case_id)
-        self.ax.set_xlabel(r"$\mathbf{N_{\Delta t}}$")
+        self.ax.set_title(rf"$\mathrm{{{self.case_id}}}$")
+        self.ax.set_xlabel(r"$\mathrm{N_{\Delta t}}$")
         self.ax.set_ylabel(self.label)
         self.ax.grid(True, which="both", linestyle='--', alpha=0.5)
 
@@ -77,7 +77,7 @@ class FileMonitorPlot:
             X = [min(timestep), max(timestep), (max(timestep) - min(timestep)) / 5, "linear"]
             Y = [min(values), max(values), (max(values) - min(values)) / 5, "linear"]
 
-            title = self.case_id + " " + self.label + f" = {values[-1]:.3f}"
+            title = rf"$\mathrm{{{self.case_id}}}$" + " " + self.label + f" = {values[-1]:.3f}"
             self.ax.set_title(title)
             self.ax.set_xlim(X[0], X[1] + X[2])
             self.ax.set_xscale(X[3])

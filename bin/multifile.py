@@ -40,7 +40,7 @@ def multi_file_monitor():
     for n, id in enumerate(job_ids):
         out_file_path = fetch_report_file_path(id)
         # print(out_file_path)
-        monitor = FileMonitorPlot(fig, axes[n], case_names[n], out_file_path, r"$\mathbf{T_{w,max} (K)}$")
+        monitor = FileMonitorPlot(fig, axes[n], case_names[n], out_file_path, r"$\mathrm{T_{w,max} (K)}$")
         monitors.append(monitor)
 
     handles, labels = monitors[0].ax.get_legend_handles_labels()
