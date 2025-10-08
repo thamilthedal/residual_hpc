@@ -35,6 +35,6 @@ monitor file
 
 
 ## Extrass:
-- Convergence line in red is currently kept at 1e-5 which can also be changed in .env
 - Automatic Dark Mode based on System time, from 6 PM to 6 AM
+
 
