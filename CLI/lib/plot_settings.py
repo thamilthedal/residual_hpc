@@ -12,15 +12,6 @@ RES_STYLE: dict[str, list[bool] | int | str | float] = {
     "grid": "off",
     "marker_size": 4
 }
-RES_MARKERS = [
-        'k--',
-        'r-.',
-        'g:',
-        'b--',
-        'm-',
-        'c:',
-        '-'
-        ]
 color = {
         "light" : "white",
         "dark" : "#121212"
