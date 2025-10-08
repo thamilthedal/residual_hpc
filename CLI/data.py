@@ -10,7 +10,7 @@ load_dotenv(dotenv_path)
 HOST_NAME = str(os.environ.get("HOST_NAME"))
 USER = str(os.environ.get("UNAME"))
 PWD = str(os.environ.get("PASS"))
-CONV_CRITERIA = float(os.environ.get("CONV_CRITERIA"))
+# CONV_CRITERIA = float(os.environ.get("CONV_CRITERIA"))
 UPDATE_INTERVAL_SECONDS = 30
 SAMPLING_DATA = 10000
 
