@@ -10,9 +10,15 @@ load_dotenv(dotenv_path)
 HOST_NAME = str(os.environ.get("HOST_NAME"))
 USER = str(os.environ.get("UNAME"))
 PWD = str(os.environ.get("PASS"))
+<<<<<<< HEAD
 CONV_CRITERIA = float(os.environ.get("CONV_CRITERIA"))
 UPDATE_INTERVAL_SECONDS = 15
 SAMPLING_DATA = 5000
+=======
+# CONV_CRITERIA = float(os.environ.get("CONV_CRITERIA"))
+UPDATE_INTERVAL_SECONDS = 30
+SAMPLING_DATA = 10000
+>>>>>>> 364c268b32cf8df9a36a86eb212a28d7bec00c4e
 
 # Plot Details
 # Title = ["", "Number of Iterations", "Normalized Residuals"]

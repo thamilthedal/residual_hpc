@@ -1,4 +1,4 @@
-# COMMAND LINE INTERFACE FOR MONITORING RESIDUALS FOR A ANSYS FLUENT SIMULATION IN ROCKS CLUSTER:
+# CLI tool for monitoring ANSYS Fluent Cases running in ROCKS HPC:
 
 It can simultaneously monitor residuals or report files upto 9 cases running in HPC
 
@@ -35,5 +35,6 @@ monitor file
 
 
 ## Extrass:
-- Convergence line in red is currently kept at 1e-5 which can also be changed in .env
 - Automatic Dark Mode based on System time, from 6 PM to 6 AM
+
+
