@@ -16,9 +16,10 @@ def multi_file_monitor():
     for n, id in enumerate(job_ids):
         out_file_path = fetch_report_file_path(id)
         # print(out_file_path)
-        monitor = FileMonitorPlot(axes[n], case_names[n], out_file_path, 
-                                  r"$\mathrm{T_{w,max} (K)}$")
-        monitors.append(monitor)
+        if out_file_path != None:
+            monitor = FileMonitorPlot(axes[n], case_names[n], out_file_path, 
+                                      r"$\mathrm{T_{w,max} (K)}$")
+            monitors.append(monitor)
 
     if len(monitors) == 1:
         fig.suptitle(rf"$\mathbf{{Monitoring\ {{{len(job_ids)}}}\ report\ file}}$", 

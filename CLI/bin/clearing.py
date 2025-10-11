@@ -1,4 +1,5 @@
 import shutil
+import os
 
 def _clear_pyc():
     folder_paths = [
@@ -7,5 +8,6 @@ def _clear_pyc():
                     "./CLI/__pycache__"
             ]
     for folder in folder_paths:
-        shutil.rmtree(folder)
+        if os.path.exists(folder):
+            shutil.rmtree(folder)
 

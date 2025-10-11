@@ -152,4 +152,4 @@ def get_report_file_path():
                 return file_path
             else:
                 print("NO FILES REPORTED!\n")
-                return False
+                return None

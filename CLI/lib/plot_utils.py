@@ -80,7 +80,10 @@ def multi_plot(X, Y, n_plots):
     if n_plots in [7, 8, 9]:
         plot_info = 331
     
-    fig = plt.figure(figsize=(17,9), tight_layout=True)
+    if n_plots == 1:
+        fig = plt.figure(figsize=(10, 6), tight_layout=True)
+    else:
+        fig = plt.figure(figsize=(17,9), tight_layout=True)
     fig.set_facecolor(color[mode])
 
     plots = []
@@ -128,12 +131,13 @@ def multi_plot(X, Y, n_plots):
         # a.grid(style['grid'],color='k',linestyle='dashed',alpha=0.5)
 
         # Global Tick Parameters
-        a.tick_params(direction='out', 
+        a.tick_params(which='both',
+                      direction='out', 
                       length=5, 
                       width=style["tick_width"], 
                       colors=contrast[mode], 
                       labelsize = style["internal_fontsize"])
-        for label in a.get_xticklabels():
+        for label in a.get_xticklabels(which="both"):
             label.set_fontweight('bold')
         for label in a.get_yticklabels():
             label.set_fontweight('bold')

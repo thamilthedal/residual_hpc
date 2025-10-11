@@ -62,3 +62,7 @@ palettes = {
 }
 
 # mode = "dark"
+icon = {
+    'light': "./CLI/img/sun.png",
+    'dark': "./CLI/img/moon.png",
+}

@@ -23,11 +23,18 @@ def multi_residue_monitor():
         monitors.append(monitor)
 
     handles, labels = monitors[0].ax.get_legend_handles_labels()
-    fig.supxlabel(r"$\mathbf{N_{iterations}}$", fontsize=RES_STYLE["label_size"])
-    fig.supylabel(r"$\mathbf{Residuals}$", fontsize=RES_STYLE["label_size"])
+    fig.supxlabel(r"$\mathbf{N_{iterations}}$", 
+                  fontsize=RES_STYLE["label_size"],
+                  color=contrast[mode])
+    fig.supylabel(r"$\mathbf{Residuals}$", 
+                  fontsize=RES_STYLE["label_size"],
+                  color=contrast[mode])
     fig.legend(handles, labels, 
                loc='upper center', 
                ncol=len(residual_names), 
-               fontsize=RES_STYLE["internal_fontsize"])
+               fontsize=RES_STYLE["internal_fontsize"],
+               facecolor=color[mode], 
+               edgecolor=contrast[mode],
+               labelcolor=contrast[mode])
 
     animate_plot(fig, monitors)

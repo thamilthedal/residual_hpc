@@ -3,8 +3,9 @@ import click
 
 @click.group()
 def monitor():
-    from CLI.bin.cluster import print_jobs
-    print_jobs()
+    # from CLI.bin.cluster import print_jobs
+    # print_jobs()
+    pass
 
 @monitor.command()
 def file():

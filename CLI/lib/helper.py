@@ -26,8 +26,8 @@ def append_file(file_address, line):
     with open(file_address, 'a') as f:
         f.writelines(" ".join(line))
 
-def get_remote_file_contents(client, file_name):
-    command = f"tail -n {md.SAMPLING_DATA} {file_name}"
+def get_remote_file_contents(client, file_name, sampling_data="+1"):
+    command = f"tail -n {sampling_data} {file_name}"
     stdin, stdout, stderr = client.exec_command(command)
     return stdout.readlines()
 
@@ -52,7 +52,7 @@ def fetch_residue(client, file_name):
     """
     Parses a list of lines to extract all residual data.
     """
-    lines_list = get_remote_file_contents(client, file_name)
+    lines_list = get_remote_file_contents(client, file_name, str(md.SAMPLING_DATA))
     all_data_rows = []
     column_headers = ['iter', 'continuity', 'x-velocity', 'y-velocity', 'energy', 'k', 'omega']
     
@@ -112,13 +112,19 @@ def get_data(file_name):
 
 def extract_scale(residuals):
     
+    # print(residuals.query("iter == iter.max()"))
+
     iterations = residuals["iter"]
+    # print(iterations)
     # print(iterations.max(), iterations.min())
-    iter_max = iterations.max()
-    iter_min = iter_max - (len(iterations)-1)
+    iter_max = iterations.iloc[-1]
+    iter_min = iterations.iloc[0]
+    # iter_min = iter_max - (len(iterations)-1)
     iter_step = abs((iter_max - iter_min))/5
+    # print(iter_max, iter_min)
     max_iter = np.log10(iter_max)
     min_iter = np.log10(iter_min)
+    # print(max_iter, min_iter)
     X = [10**min_iter, 10**max_iter, 1, 'log']
 
     max_res = residuals.iloc[:, 1:].max().max()

@@ -23,6 +23,8 @@ def animate_plot(fig, monitors):
     plt.tight_layout(rect=[0, 0, 1, 0.95])
     if len(monitors) > 1:
         plt.get_current_fig_manager().window.state('zoomed')
+    else:
+        plt.get_current_fig_manager().window.geometry('1300x900+0+0')
     plt.show()
 
 
