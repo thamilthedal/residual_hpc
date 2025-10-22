@@ -26,7 +26,7 @@ monitor residue
 
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/5f922eae-42da-4b8e-9d7a-04c0eb017cb5" />
 
-6. To monitor report files,
+6. To monitor report files, (Save in *.csv fileformat)
 ```
 monitor file
 ```
@@ -36,5 +36,6 @@ monitor file
 
 ## Extrass:
 - Automatic Dark Mode based on System time, from 6 PM to 6 AM
+
 
 
