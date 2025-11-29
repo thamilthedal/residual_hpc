@@ -18,15 +18,15 @@ monitor
 ```
 pip install -e .
 ```
-4. Change the HOST_NAME, UNAME and PASS for your Cluster in .env file
-5. Run the monitor by following command
+4. Run the monitor by following command
 ```
 monitor residue
 ```
+5. For the first time run, the program will request HOSTNAME, USERNAME and PASSWORD for the remote HPC Cluster and it will be encrypted stored only locally in a ".env" file for all the runs after that.
 
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/5f922eae-42da-4b8e-9d7a-04c0eb017cb5" />
 
-6. To monitor report files, (Save in *.csv fileformat)
+7. To monitor report files, (Save in *.csv fileformat)
 ```
 monitor file
 ```
@@ -36,6 +36,7 @@ monitor file
 
 ## Extrass:
 - Automatic Dark Mode based on System time, from 6 PM to 6 AM
+
 
 
 
