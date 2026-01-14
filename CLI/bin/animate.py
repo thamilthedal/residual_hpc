@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 from CLI.lib.plot_utils import multi_plot
 from matplotlib.animation import FuncAnimation
 from CLI.data import UPDATE_INTERVAL_SECONDS
-
+from CLI.lib.helper import print_error
 
 def animate_plot(fig, monitors):
 
@@ -35,9 +35,10 @@ def init_plot(X, Y):
     if len(final_cases) > 0:
         case_names = final_cases["JOB_NAME"].to_list()
         job_ids = final_cases["JOB_ID"].to_list()
+        start_time = final_cases["TIME"].to_list()
     else:
+        print_error("No cases running for this user!")
         raise ValueError
-
     fig, axes = multi_plot(X, Y, len(job_ids))
 
-    return [fig, axes, job_ids, case_names]
+    return [fig, axes, job_ids, case_names, start_time]

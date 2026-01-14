@@ -10,7 +10,7 @@ Y = [0, 100, 10, "linear"]
 
 def multi_file_monitor():
 
-    [fig, axes, job_ids, case_names] = init_plot(X, Y)
+    [fig, axes, job_ids, case_names, start_times] = init_plot(X, Y)
 
     monitors = []
     for n, id in enumerate(job_ids):
@@ -18,7 +18,7 @@ def multi_file_monitor():
         # print(out_file_path)
         if out_file_path != None:
             monitor = FileMonitorPlot(axes[n], case_names[n], out_file_path, 
-                                      r"$\mathrm{T_{w,max} (K)}$")
+                                      r"$\mathrm{T_{w,max} (K)}$", start_times[n])
             monitors.append(monitor)
 
     if len(monitors) == 1:

@@ -4,7 +4,7 @@ import pandas as pd
 import time
 import numpy as np
 import io
-
+from datetime import datetime
 
 def connect_ssh_client():
     client = paramiko.SSHClient()
@@ -58,6 +58,10 @@ def fetch_residue(client, file_name):
     
     # Directly iterate over the list of lines (much faster)
     for line in lines_list:
+        if "binary" in line:
+            continue
+        if "Stabilizing" in line:
+            continue
         parts = line.strip().split()
 
         if len(parts) < 7:
@@ -68,8 +72,11 @@ def fetch_residue(client, file_name):
         except ValueError:
             continue
 
+        # print(parts)
+
         residuals = [parse_value(p) for p in parts[1:7]]
         all_data_rows.append([iteration] + residuals)
+
 
     df = pd.DataFrame(all_data_rows, columns=column_headers)
 
@@ -158,3 +165,26 @@ def print_header(heading: str)-> None:
     print(" "*offset + heading.upper() + " "*offset)
     print(character*length)
 
+def print_error(heading: str)-> None:
+
+    character = '-'
+    offset = 5
+
+    length = len(heading) + (2*offset)
+
+    print(character*length)
+    print(" "*offset + heading.upper() + " "*offset)
+    print(character*length)
+
+
+def calculate_eta(start_str):
+    now = datetime.now()
+
+    # Convert string to a datetime object for today
+    start_time = datetime.strptime(start_str, "%H:%M:%S").replace(
+        year=now.year, month=now.month, day=now.day
+    )
+
+    elapsed = now - start_time
+    elapsed = np.round(elapsed.total_seconds() / 3600, 2)
+    return elapsed

@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from CLI.lib.plot_settings import alpha, palettes, mode
-from CLI.lib.helper import get_data, get_residue, extract_scale
+from CLI.lib.helper import get_data, get_residue, extract_scale, calculate_eta
 
 
 class BaseMonitorPlot:
@@ -9,11 +9,12 @@ class BaseMonitorPlot:
     Base Class for Monitor Plots
     """
 
-    def __init__(self, ax, case_id, file_path):
+    def __init__(self, ax, case_id, file_path, start_time):
         self.ax = ax
         self.case_id = case_id
         self.file_path = file_path
         self.folder = self.file_path.split("/")[-2]
+        self.start = start_time
 
 
 class ResidueMonitorPlot(BaseMonitorPlot):
@@ -21,8 +22,8 @@ class ResidueMonitorPlot(BaseMonitorPlot):
     Manages a single subplot for live monitoring of multiple residual
     equations from an ANSYS Fluent case.
     """
-    def __init__(self, ax, case_id, residual_names, file_path):
-        super().__init__(ax, case_id, file_path)
+    def __init__(self, ax, case_id, residual_names, file_path, start_time):
+        super().__init__(ax, case_id, file_path, start_time)
         self.residual_names = residual_names
         self.lines = {}
         self.ax.set_title(rf"$\mathrm{{{self.case_id}}}$")
@@ -30,7 +31,7 @@ class ResidueMonitorPlot(BaseMonitorPlot):
         # self.ax.set_xscale("log")
         # self.ax.set_yscale("log")
         for i, name in enumerate(self.residual_names):
-            line, = self.ax.plot([], [], label=fr"$\mathbf{{{name}}}$", color=palettes[mode][name], linestyle='--', alpha=0.8)
+            line, = self.ax.plot([], [], label=fr"$\mathbf{{{name}}}$", color=palettes[mode][name], alpha=0.8)
             self.lines[str(i+1)] = line
 
     def update_plot(self):
@@ -38,9 +39,12 @@ class ResidueMonitorPlot(BaseMonitorPlot):
         X, Y = extract_scale(residuals_dict)
         # print(iterations)
         # print(X, Y)
-        title = rf"$\mathrm{{{self.case_id}\ [{self.folder}]}}$"
+        elapsed = calculate_eta(self.start)
+        title = rf"$\mathrm{{{self.case_id}\ [{self.folder}]\ Elapsed: {elapsed}\ h}}$"
         self.ax.set_title(title)
         self.ax.set_xlim(X[0], X[1])
+
+
         # x_ticks = np.logspace(np.log10(X[0]), np.log10(X[1]), 5, endpoint=True)
         # self.ax.set_xticks(x_ticks)
         self.ax.set_xscale(X[3])
@@ -57,8 +61,8 @@ class FileMonitorPlot(BaseMonitorPlot):
     """
         Manages a single subplot for live monitoring of report files for ANSYS Fluent case
     """
-    def __init__(self, ax, case_id, file_path, label):
-        super().__init__(ax, case_id, file_path)
+    def __init__(self, ax, case_id, file_path, label, start_time):
+        super().__init__(ax, case_id, file_path, start_time)
         self.label = label
         self.lines = {}
         self.ax.set_title(rf"$\mathrm{{{self.case_id}}}$")
@@ -66,8 +70,7 @@ class FileMonitorPlot(BaseMonitorPlot):
         self.ax.set_ylabel(self.label)
         self.ax.grid(True, which="both", linestyle='--', alpha=alpha[mode])
 
-        line, = self.ax.plot([], [], color=palettes[mode]['k'],
-                             linestyle='--')
+        line, = self.ax.plot([], [], color=palettes[mode]['k'])
 
         self.lines[case_id] = line
 
@@ -80,7 +83,9 @@ class FileMonitorPlot(BaseMonitorPlot):
             X = [min(timestep), max(timestep), (max(timestep) - min(timestep)) / 4, "linear"]
             Y = [min(values), max(values), (max(values) - min(values)) / 4, "linear"]
 
-            title = rf"$\mathrm{{{self.case_id}}}$" + " " + self.label + rf"$\mathrm{{\ at\ \Delta t\ of\ {timestep[-1]} = {values[-1]:.3f}\ [{self.folder}]}}$"
+            Twavg = np.mean(values[:-100])
+
+            title = rf"$\mathrm{{{self.case_id}}}$ " + rf"$\mathrm{{\ At\ \Delta t\ ({int(timestep[-1])}),\ T_{{w,avg,100}} = {Twavg:.2f}\ K\ [{self.folder}]}}$"
             self.ax.set_title(title)
             self.ax.set_xlim(X[0], X[1] + X[2])
             self.ax.set_xscale(X[3])
