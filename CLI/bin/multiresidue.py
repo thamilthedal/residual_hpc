@@ -11,8 +11,11 @@ Y = [-2, 2, 1, "log"]
 
 
 def multi_residue_monitor():
-
-    [fig, axes, job_ids, case_names] = init_plot(X, Y)
+    try:
+        [fig, axes, job_ids, case_names] = init_plot(X, Y)
+    except ValueError as e:
+        print("No cases running for the user!")
+        return 0
 
     monitors = []
     for n, id in enumerate(job_ids):

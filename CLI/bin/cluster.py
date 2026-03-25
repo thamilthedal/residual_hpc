@@ -21,7 +21,7 @@ def collate_duplicates(df):
 
 
 def get_cluster_status(client):
-    out_list = ssh_command(client, "qstat  -f")
+    out_list = ssh_command(client, "squeue")
     running_cases = []
     for i in out_list[1:]:
         if '-----' in i:

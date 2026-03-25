@@ -32,7 +32,8 @@ def init_plot(X, Y):
 
     final_cases = get_jobs()
 
-    if len(final_cases) > 0:
+    if (len(final_cases) > 0):
+    # len(final_cases) > 0:
         case_names = final_cases["JOB_NAME"].to_list()
         job_ids = final_cases["JOB_ID"].to_list()
     else:
