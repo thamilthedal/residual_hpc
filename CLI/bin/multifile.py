@@ -10,11 +10,15 @@ Y = [0, 100, 10, "linear"]
 
 def multi_file_monitor():
 
+<<<<<<< HEAD
     try:
         [fig, axes, job_ids, case_names] = init_plot(X, Y)
     except ValueError as e:
         print("No cases running for the user")
         return 0
+=======
+    [fig, axes, job_ids, case_names, start_times] = init_plot(X, Y)
+>>>>>>> eaa32d68df75ddfd307b4a127b3b84317df80fc6
 
     monitors = []
     for n, id in enumerate(job_ids):
@@ -22,7 +26,7 @@ def multi_file_monitor():
         # print(out_file_path)
         if out_file_path != None:
             monitor = FileMonitorPlot(axes[n], case_names[n], out_file_path, 
-                                      r"$\mathrm{T_{w,max} (K)}$")
+                                      r"$\mathrm{T_{w,max} (K)}$", start_times[n])
             monitors.append(monitor)
 
     if len(monitors) == 1:
