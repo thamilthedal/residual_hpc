@@ -36,10 +36,13 @@ def init_plot(X, Y):
     # len(final_cases) > 0:
         case_names = final_cases["JOB_NAME"].to_list()
         job_ids = final_cases["JOB_ID"].to_list()
-        start_time = final_cases["TIME"].to_list()
+        # print(final_cases, job_ids)
+        start_time = final_cases["ELAP_TIME"].to_list()
+        # print(start_time)
     else:
         print_error("No cases running for this user!")
         raise ValueError
+    # print(len(job_ids))
     fig, axes = multi_plot(X, Y, len(job_ids))
 
     return [fig, axes, job_ids, case_names, start_time]

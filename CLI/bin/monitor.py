@@ -39,8 +39,8 @@ class ResidueMonitorPlot(BaseMonitorPlot):
         X, Y = extract_scale(residuals_dict)
         # print(iterations)
         # print(X, Y)
-        elapsed = calculate_eta(self.start)
-        title = rf"$\mathrm{{{self.case_id}\ [{self.folder}]\ Elapsed: {elapsed}\ h}}$"
+        elapsed = self.start
+        title = rf"$\mathrm{{{self.case_id}\ [{self.folder}]\ Elapsed time: {elapsed}}}$"
         self.ax.set_title(title)
         self.ax.set_xlim(X[0], X[1])
 

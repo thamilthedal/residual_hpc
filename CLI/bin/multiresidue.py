@@ -11,27 +11,25 @@ Y = [-2, 2, 1, "log"]
 
 
 def multi_residue_monitor():
-<<<<<<< HEAD
     try:
-        [fig, axes, job_ids, case_names] = init_plot(X, Y)
+        [fig, axes, job_ids, case_names, start_times] = init_plot(X, Y)
+        # print(job_ids, case_names)
     except ValueError as e:
+        print(e)
         print("No cases running for the user!")
         return 0
-=======
-
-    [fig, axes, job_ids, case_names, start_times] = init_plot(X, Y)
->>>>>>> eaa32d68df75ddfd307b4a127b3b84317df80fc6
 
     monitors = []
     for n, id in enumerate(job_ids):
         out_file_path = fetch_out_file_path(id)
         # print(out_file_path)
-        monitor = ResidueMonitorPlot(axes[n], case_names[n], residual_names, 
+        monitor = ResidueMonitorPlot(axes[n], case_names[n], residual_names,
                                      out_file_path, start_times[n])
         monitors.append(monitor)
 
     handles, labels = monitors[0].ax.get_legend_handles_labels()
-    fig.supxlabel(r"$\mathbf{N_{iterations}}$", 
+
+    fig.supxlabel(r"$\mathbf{N_{iterations}}$",
                   fontsize=RES_STYLE["label_size"],
                   color=contrast[mode])
     fig.supylabel(r"$\mathbf{Residuals}$", 

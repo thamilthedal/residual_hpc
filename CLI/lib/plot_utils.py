@@ -7,6 +7,7 @@ from CLI.lib.plot_settings import color, contrast, mode, RES_STYLE
 
 def multi_plot(X, Y, n_plots):
 
+    # print(n_plots)
     Title = ["", "", ""]
     style = RES_STYLE
 
@@ -29,7 +30,7 @@ def multi_plot(X, Y, n_plots):
         plot_info = 231
     if n_plots in [7, 8, 9]:
         plot_info = 331
-    
+    # print(plot_info)
     if n_plots == 1:
         fig = plt.figure(figsize=(10, 6), tight_layout=True)
     else:
@@ -40,7 +41,7 @@ def multi_plot(X, Y, n_plots):
     for i in range(n_plots):
         plots.append(fig.add_subplot(plot_info+i))
 
-
+    # print(plots)
 
     for a in plots:
         a.set_facecolor(color[mode])
@@ -114,5 +115,6 @@ def multi_plot(X, Y, n_plots):
             # print(yticks)
             a.set_yticks(yticks)
 
+    # print(fig)
     return [fig, plots]
 

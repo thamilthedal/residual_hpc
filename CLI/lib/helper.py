@@ -9,6 +9,7 @@ from datetime import datetime
 def connect_ssh_client():
     client = paramiko.SSHClient()
     client.load_system_host_keys()
+    # print(md.HOST_NAME, md.USER, md.PWD)
     client.connect(md.HOST_NAME, username=md.USER, password=md.PWD)
     return client
 

@@ -24,27 +24,29 @@ def get_cluster_status(client):
     out_list = ssh_command(client, "squeue")
     running_cases = []
     for i in out_list[1:]:
-        if '-----' in i:
-            continue
-        if 'compute' in i:
-            node_number = i.split()[0].split('-')[-1].split('.')[0]
-        else:
-            if 'dr' not in i:
-                running_cases.append([node_number] + i.split())
+        line = i.split()
+        line = [j.strip() for j in line]
+        running_cases.append(line)
+        # if '-----' in i:
+        #     continue
+        # if 'compute' in i:
+        #     node_number = i.split()[0].split('-')[-1].split('.')[0]
+        # else:
+        #     if 'dr' not in i:
+        #         running_cases.append([node_number] + i.split())
 
 
     running_cases = pd.DataFrame(running_cases, 
                  columns = 
-                 ["NODE_NUM",
-                  "JOB_ID", 
-                  "LOAD", 
+                 ["JOB_ID",
+                  "PARTITION", 
                   "JOB_NAME", 
                   "USER", 
                   "STATUS", 
-                  "DATE", 
-                  "TIME", 
-                  "N_CORES"])
-
+                  "ELAP_TIME",
+                  "N_NODES",
+                  "NODE_NUM"])
+    # print(running_cases)
     return running_cases
 
 def get_jobs():
@@ -52,10 +54,11 @@ def get_jobs():
 
     # LIST ALL CASES RUNNING UNDER USER
     running_cases = get_cluster_status(client)
+    # print(running_cases)
     user_cases = running_cases.query(f"USER == '{USER}'")
-    processed_cases = collate_duplicates(user_cases)
+    # processed_cases = collate_duplicates(user_cases)
     client.close()
-    return processed_cases
+    return user_cases
 
 
 def print_jobs():
@@ -65,11 +68,11 @@ def print_jobs():
 
         print(f"\nCURRENTLY RUNNING CASES FOR {USER}:\n\n")
         print("-"*100)
-        print("OPTION\tJOB_ID\tJOB_NAME\tDATE\t\tTIME\t\tNODE_NUM\tN_CORES")
+        print("OPTION\tJOB_ID\tJOB_NAME\tDATE\t\tTIME\t\tNODE_NUM")
         print("-"*100)
 
         for index, row in final_cases.iterrows():
-            print(f"{index+1}\t{row['JOB_ID']}\t{row['JOB_NAME']}\t{row['DATE']}\t{row['TIME']}\t{row['NODE_NUM']}\t\t{row['N_CORES']}")
+            print(f"{index+1}\t{row['JOB_ID']}\t{row['JOB_NAME']}\t{row['DATE']}\t{row['TIME']}\t{row['NODE_NUM']}\t{row['N_CORES']}")
         print("-"*100)
     else:
         print(f"CURRENTLY NO CASE IS RUNNING FOR {USER}\n")
@@ -77,11 +80,12 @@ def print_jobs():
 def fetch_out_file_path(job_ID):
     client = connect_ssh_client()
     # FIND FILE NAME OF OUTPUT AND ADDRESS BASED ON JOB ID
-    output = ssh_command(client, f"qstat -explain c -j {job_ID}")[1:]
+    output = ssh_command(client, f"scontrol show job {job_ID}")[-2].strip()
+    # print(output)
     client.close()
-    folder = output[11].split(':')[1].strip() 
-    file_name = output[19].split('/')[1].strip()
-    file_path = f"{folder}/{file_name}"            
+    file_path = output.split('=')[1].strip()
+    # file_name = output[19].split('/')[1].strip()
+    # file_path = f"{folder}/{file_name}"
     return file_path
 
 
