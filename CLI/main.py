@@ -1,4 +1,3 @@
-# super_cli/my_cli.py
 import click
 
 @click.group()
@@ -22,4 +21,4 @@ def residue():
     _clear_pyc()
 
 if __name__ == '__main__':
-    super()
+    monitor()

@@ -2,7 +2,7 @@ from CLI.bin.cluster import get_jobs
 from matplotlib import pyplot as plt
 from CLI.lib.plot_utils import multi_plot
 from matplotlib.animation import FuncAnimation
-from CLI.data import UPDATE_INTERVAL_SECONDS
+from CLI.settings import UPDATE_INTERVAL_SECONDS
 from CLI.lib.helper import print_error
 
 def animate_plot(fig, monitors):

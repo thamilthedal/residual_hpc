@@ -34,8 +34,16 @@ else:
     mode = "dark"
 
 palettes = {
-    'light': ['royalblue', 'darkorange', 'forestgreen', 'crimson', 'darkviolet', 'saddlebrown'],
-    'dark': ['skyblue', 'sandybrown', 'mediumaquamarine', 'lightcoral', 'orchid', 'peru']
+    'light': [
+        'royalblue', 'darkorange', 'forestgreen', 'crimson',
+        'darkviolet', 'saddlebrown', 'darkcyan', 'deeppink',
+        'olive', 'slategray'
+    ],
+    'dark': [
+        'skyblue', 'sandybrown', 'mediumaquamarine', 'lightcoral',
+        'orchid', 'peru', 'aquamarine', 'hotpink',
+        'yellowgreen', 'lightsteelblue'
+    ]
 }
 
 # mode = "dark"

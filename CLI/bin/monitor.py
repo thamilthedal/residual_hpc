@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 from CLI.lib.plot_settings import alpha, palettes, mode
 from CLI.lib.helper import get_data, get_residue, extract_scale
@@ -70,7 +69,7 @@ class FileMonitorPlot(BaseMonitorPlot):
         self.ax.set_ylabel(self.label)
         self.ax.grid(True, which="both", linestyle='--', alpha=alpha[mode])
 
-        line, = self.ax.plot([], [], color=palettes[mode]['k'])
+        line, = self.ax.plot([], [], color=palettes[mode][3])
 
         self.lines[case_id] = line
 

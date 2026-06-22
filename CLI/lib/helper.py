@@ -1,15 +1,12 @@
 import paramiko
-import CLI.data as md
+import CLI.login as md
+from CLI.settings import SAMPLING_DATA
 import pandas as pd
-import time
 import numpy as np
-import io
-from datetime import datetime
 
 def connect_ssh_client():
     client = paramiko.SSHClient()
     client.load_system_host_keys()
-    # print(md.HOST_NAME, md.USER, md.PWD)
     client.connect(md.HOST_NAME, username=md.USER, password=md.PWD)
     return client
 
@@ -30,7 +27,6 @@ def get_remote_file_contents(client, file_name, sampling_data="+1"):
     return lines
 
 def get_start_id(file_name):
-    # print(file_name)
     client = connect_ssh_client()
     command = f"head -n 500 {file_name}"
     stdin, stdout, stderr = client.exec_command(command)
@@ -38,8 +34,6 @@ def get_start_id(file_name):
     stdin.close()
     stdout.close()
     stderr.close()
-    # remote_file_contents = get_remote_file_contents(client, file_name)
-    # print(len(remote_file_contents))
     for id, line in enumerate(remote_file_contents):
         if 'time/iter' in line:
             legend = line.split()[1:-1]
@@ -62,11 +56,9 @@ def get_residue(file_name, legend):
     Parses a list of lines to extract all residual data.
     """
     client = connect_ssh_client()
-    lines_list = get_remote_file_contents(client, file_name, str(md.SAMPLING_DATA))
-    # print(len(lines_list))
+    lines_list = get_remote_file_contents(client, file_name, str(SAMPLING_DATA))
     all_data_rows = []
     column_headers = ['iter'] + legend
-    # print(column_headers)
     
     # Directly iterate over the list of lines (much faster)
     for line in lines_list:
