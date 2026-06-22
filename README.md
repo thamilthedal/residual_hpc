@@ -22,7 +22,7 @@ pip install -e .
 ```
 monitor residue
 ```
-5. For the first time run, the program will request HOSTNAME, USERNAME and PASSWORD for the remote HPC Cluster and it will be encrypted stored only locally in a ".env" file for all the runs after that.
+5. For the first time run, the program will request IP ADDRESS, USERNAME and PASSWORD for the remote HPC Cluster and it will be encrypted stored only locally in a ".env" file for all the runs after that.
 
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/5f922eae-42da-4b8e-9d7a-04c0eb017cb5" />
 
