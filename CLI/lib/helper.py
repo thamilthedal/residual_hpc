@@ -140,15 +140,3 @@ def print_error(heading: str)-> None:
     print(" "*offset + heading.upper() + " "*offset)
     print(character*length)
 
-
-# def calculate_eta(start_str):
-#     now = datetime.now()
-#
-#     # Convert string to a datetime object for today
-#     start_time = datetime.strptime(start_str, "%H:%M:%S").replace(
-#         year=now.year, month=now.month, day=now.day
-#     )
-#
-#     elapsed = now - start_time
-#     elapsed = np.round(elapsed.total_seconds() / 3600, 2)
-#     return elapsed
