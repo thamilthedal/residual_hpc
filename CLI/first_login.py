@@ -14,7 +14,7 @@ def store_data(key1, key2, cipher_text1, cipher_text2):
 
 
 def first_login():
-    input_host = input("Enter the Hostname: ")
+    input_host = input("Enter the IP Address: ")
     input_user = input("Enter the Username: ")
     input_pass = input("Enter the Password: ")
 

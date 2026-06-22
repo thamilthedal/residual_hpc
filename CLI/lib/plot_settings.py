@@ -34,22 +34,8 @@ else:
     mode = "dark"
 
 palettes = {
-    'light': {
-        'continuity': 'royalblue',
-        'x-velocity': 'darkorange',
-        'y-velocity': 'forestgreen',
-        'k': 'crimson',
-        'omega': 'darkviolet',
-        'energy': 'saddlebrown'  # Replaced teal
-    },
-    'dark': {
-        'continuity': 'skyblue',
-        'x-velocity': 'sandybrown',
-        'y-velocity': 'mediumaquamarine',
-        'k': 'lightcoral',
-        'omega': 'orchid',
-        'energy': 'peru'          # Replaced turquoise
-    }
+    'light': ['royalblue', 'darkorange', 'forestgreen', 'crimson', 'darkviolet', 'saddlebrown'],
+    'dark': ['skyblue', 'sandybrown', 'mediumaquamarine', 'lightcoral', 'orchid', 'peru']
 }
 
 # mode = "dark"

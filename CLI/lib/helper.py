@@ -19,21 +19,27 @@ def ssh_command(client, command):
     out_list = stdout.readlines()
     return out_list
 
-def write_file(file_address):
-    with open(file_address, 'w') as f:
-        f.write("residue\n")
-
-def append_file(file_address, line):
-    with open(file_address, 'a') as f:
-        f.writelines(" ".join(line))
 
 def get_remote_file_contents(client, file_name, sampling_data="+1"):
     command = f"tail -n {sampling_data} {file_name}"
     stdin, stdout, stderr = client.exec_command(command)
-    return stdout.readlines()
+    lines = stdout.readlines()
+    stdin.close()
+    stdout.close()
+    stderr.close()
+    return lines
 
-def get_start_id(client, file_name):
-    remote_file_contents = get_remote_file_contents(client, file_name)
+def get_start_id(file_name):
+    # print(file_name)
+    client = connect_ssh_client()
+    command = f"head -n 500 {file_name}"
+    stdin, stdout, stderr = client.exec_command(command)
+    remote_file_contents = stdout.readlines()
+    stdin.close()
+    stdout.close()
+    stderr.close()
+    # remote_file_contents = get_remote_file_contents(client, file_name)
+    # print(len(remote_file_contents))
     for id, line in enumerate(remote_file_contents):
         if 'time/iter' in line:
             legend = line.split()[1:-1]
@@ -43,19 +49,24 @@ def get_start_id(client, file_name):
 
 
 def parse_value(value_str):
-    """Helper function to safely convert a string to a float."""
+    """
+    Helper function to safely convert a string to a float.
+    """
     try:
         return float(value_str)
     except (ValueError, TypeError):
         return np.nan
 
-def fetch_residue(client, file_name):
+def get_residue(file_name, legend):
     """
     Parses a list of lines to extract all residual data.
     """
+    client = connect_ssh_client()
     lines_list = get_remote_file_contents(client, file_name, str(md.SAMPLING_DATA))
+    # print(len(lines_list))
     all_data_rows = []
-    column_headers = ['iter', 'continuity', 'x-velocity', 'y-velocity', 'energy', 'k', 'omega']
+    column_headers = ['iter'] + legend
+    # print(column_headers)
     
     # Directly iterate over the list of lines (much faster)
     for line in lines_list:
@@ -65,44 +76,20 @@ def fetch_residue(client, file_name):
             continue
         parts = line.strip().split()
 
-        if len(parts) < 7:
+        if len(parts) < len(column_headers):
             continue
-
         try:
             iteration = int(parts[0])
         except ValueError:
             continue
-
         # print(parts)
 
-        residuals = [parse_value(p) for p in parts[1:7]]
+        residuals = [parse_value(p) for p in parts[1:len(column_headers)]]
         all_data_rows.append([iteration] + residuals)
 
-
     df = pd.DataFrame(all_data_rows, columns=column_headers)
-
     # print(df.dtypes)
-
     return df
-
-
-def get_residue(file_name):
-    count = 0
-    while(True):
-        client = connect_ssh_client()
-        [legend, start_id] = get_start_id(client, file_name)
-        if start_id == 0:
-            if count == 0:
-                # print("Iterations are not started.", end="\t")
-                count += 1
-            else:
-                print(".", end="\t")
-            time.sleep(15)
-        else:
-            break
-    # residue = fetch_residue(client, file_name, start_id, legend, len(legend))
-    residue = fetch_residue(client, file_name)
-    return residue
 
 def get_data(file_name):
     client = connect_ssh_client()
@@ -142,30 +129,6 @@ def extract_scale(residuals):
     return [X, Y]
 
 
-def get_eqns(file_name):
-    res = get_residue(file_name)
-    return [len(res.columns) - 2, res.columns[:-2]]
-
-def write_code(code):
-    with open("./.code", "w") as file:
-        file.write(f"{code}")
-
-def get_code():
-    with open("./.code", "r") as file:
-        code = int(file.readlines()[0])
-        return code
-
-def print_header(heading: str)-> None:
-
-    character = '-'
-    offset = 5
-
-    length = len(heading) + (2*offset)
-
-    print(character*length)
-    print(" "*offset + heading.upper() + " "*offset)
-    print(character*length)
-
 def print_error(heading: str)-> None:
 
     character = '-'
@@ -178,14 +141,14 @@ def print_error(heading: str)-> None:
     print(character*length)
 
 
-def calculate_eta(start_str):
-    now = datetime.now()
-
-    # Convert string to a datetime object for today
-    start_time = datetime.strptime(start_str, "%H:%M:%S").replace(
-        year=now.year, month=now.month, day=now.day
-    )
-
-    elapsed = now - start_time
-    elapsed = np.round(elapsed.total_seconds() / 3600, 2)
-    return elapsed
+# def calculate_eta(start_str):
+#     now = datetime.now()
+#
+#     # Convert string to a datetime object for today
+#     start_time = datetime.strptime(start_str, "%H:%M:%S").replace(
+#         year=now.year, month=now.month, day=now.day
+#     )
+#
+#     elapsed = now - start_time
+#     elapsed = np.round(elapsed.total_seconds() / 3600, 2)
+#     return elapsed

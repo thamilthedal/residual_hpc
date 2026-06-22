@@ -59,6 +59,7 @@ else:
 # # CONV_CRITERIA = float(os.environ.get("CONV_CRITERIA"))
 UPDATE_INTERVAL_SECONDS = 15
 SAMPLING_DATA = 5000
+
 # # =======
 # # # CONV_CRITERIA = float(os.environ.get("CONV_CRITERIA"))
 # # UPDATE_INTERVAL_SECONDS = 30

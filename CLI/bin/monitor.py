@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from CLI.lib.plot_settings import alpha, palettes, mode
-from CLI.lib.helper import get_data, get_residue, extract_scale, calculate_eta
+from CLI.lib.helper import get_data, get_residue, extract_scale
 
 
 class BaseMonitorPlot:
@@ -22,7 +22,7 @@ class ResidueMonitorPlot(BaseMonitorPlot):
     Manages a single subplot for live monitoring of multiple residual
     equations from an ANSYS Fluent case.
     """
-    def __init__(self, ax, case_id, residual_names, file_path, start_time):
+    def __init__(self, ax, residual_names, case_id, file_path, start_time):
         super().__init__(ax, case_id, file_path, start_time)
         self.residual_names = residual_names
         self.lines = {}
@@ -31,11 +31,11 @@ class ResidueMonitorPlot(BaseMonitorPlot):
         # self.ax.set_xscale("log")
         # self.ax.set_yscale("log")
         for i, name in enumerate(self.residual_names):
-            line, = self.ax.plot([], [], label=fr"$\mathbf{{{name}}}$", color=palettes[mode][name], alpha=0.8)
+            line, = self.ax.plot([], [], label=fr"$\mathbf{{{name}}}$", color=palettes[mode][i], alpha=0.8)
             self.lines[str(i+1)] = line
 
     def update_plot(self):
-        residuals_dict = get_residue(self.file_path)
+        residuals_dict = get_residue(self.file_path, self.residual_names)
         X, Y = extract_scale(residuals_dict)
         # print(iterations)
         # print(X, Y)

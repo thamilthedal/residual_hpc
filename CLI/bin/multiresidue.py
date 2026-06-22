@@ -1,10 +1,11 @@
 from CLI.bin.cluster import fetch_out_file_path
 from CLI.bin.monitor import ResidueMonitorPlot
+from CLI.lib.helper import get_start_id
 from CLI.lib.plot_settings import color, contrast, mode, RES_STYLE
 from CLI.bin.animate import animate_plot, init_plot
+from datetime import time
 
-
-residual_names = ["continuity", "x-velocity", "y-velocity", "energy", "k", "omega"]
+# residual_names = ["continuity", "x-velocity", "y-velocity", "energy", "k", "omega"]
 Title = ["", "", ""]
 X = [-3, 3, 1, "log"]
 Y = [-2, 2, 1, "log"]
@@ -22,10 +23,16 @@ def multi_residue_monitor():
     monitors = []
     for n, id in enumerate(job_ids):
         out_file_path = fetch_out_file_path(id)
-        # print(out_file_path)
-        monitor = ResidueMonitorPlot(axes[n], case_names[n], residual_names,
-                                     out_file_path, start_times[n])
-        monitors.append(monitor)
+        legend, start_id = get_start_id(out_file_path)
+
+        if start_id == 0:
+            time.sleep(15)
+            continue
+        else:
+            # print(out_file_path)
+            monitor = ResidueMonitorPlot(axes[n], legend, case_names[n],
+                                         out_file_path, start_times[n])
+            monitors.append(monitor)
 
     handles, labels = monitors[0].ax.get_legend_handles_labels()
 
@@ -37,7 +44,7 @@ def multi_residue_monitor():
                   color=contrast[mode])
     fig.legend(handles, labels, 
                loc='upper center', 
-               ncol=len(residual_names), 
+               ncol=len(legend),
                fontsize=RES_STYLE["internal_fontsize"],
                facecolor=color[mode], 
                edgecolor=contrast[mode],
